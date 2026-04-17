@@ -71,7 +71,7 @@ const onKeyUp = (event: KeyboardEvent) => {
 document.addEventListener('keydown', onKeyDown);
 document.addEventListener('keyup', onKeyUp);
 
-const cameraAnimation = (renderer: THREE.WebGLRenderer, scene: THREE.Scene) => {
+export const cameraAnimation = (renderer: THREE.WebGLRenderer, scene: THREE.Scene) => {
   const time = performance.now();
 
   if (cameraControls.isLocked === true) {
@@ -96,5 +96,3 @@ const cameraAnimation = (renderer: THREE.WebGLRenderer, scene: THREE.Scene) => {
   prevTime = time;
   renderer.render(scene, camera);
 };
-
-export { cameraAnimation };

@@ -8,5 +8,5 @@ export const floor = new THREE.Mesh( floorGeometry, floorMaterial );
 SCENE_UTIL.scene.add(floor);
 
 export const penguinPromise = SCENE_UTIL.loadGLTF('src/assets/penguin_club_penguin/scene.gltf', (gltf) => {
-  gltf.scene.position.set(0, 5, 0);
+  gltf.scene.position.set(0, 4, 0);
 });

@@ -22,4 +22,3 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height);
 
 renderer.setAnimationLoop(() => cameraAnimation(renderer, SCENE_UTIL.scene));
-
