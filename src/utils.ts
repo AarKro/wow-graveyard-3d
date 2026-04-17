@@ -11,7 +11,15 @@ export const SCENE_UTIL = {
   scene: new THREE.Scene(),
   loadGLTF: async (path: string, cb: (gltf: GLTF) => void) => {
     const gltf = await SCENE_UTIL.loader.loadAsync(path);
+    
+    gltf.scene.traverse((node) => {
+      if (node.castShadow !== undefined) { 
+        node.castShadow = true; 
+      }
+    });
+
     cb(gltf);
+    
     SCENE_UTIL.scene.add(gltf.scene);    
   }
 };
