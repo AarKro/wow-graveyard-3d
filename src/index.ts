@@ -5,7 +5,7 @@ import { mesh } from './world';
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color( 0xffffff );
-scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
+// scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
 
 scene.add(cameraControls.object);
 scene.add(mesh);

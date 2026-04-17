@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { sizes } from './utils';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 
 let moveForward = false;
@@ -13,15 +12,14 @@ const direction = new THREE.Vector3();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
 
 const cameraControls = new PointerLockControls(camera, document.body);
+cameraControls.object.position.set(0, 1, 10);
 
 window.document.body.addEventListener('click', () => {
   cameraControls.lock();
 });
 
 const onKeyDown = function (event: KeyboardEvent) {
-
   switch (event.code) {
-
     case 'ArrowUp':
     case 'KeyW':
       moveForward = true;
@@ -42,13 +40,10 @@ const onKeyDown = function (event: KeyboardEvent) {
       moveRight = true;
       break;
   }
-
 };
 
 const onKeyUp = function (event: KeyboardEvent) {
-
   switch (event.code) {
-
     case 'ArrowUp':
     case 'KeyW':
       moveForward = false;
@@ -75,11 +70,9 @@ document.addEventListener('keydown', onKeyDown);
 document.addEventListener('keyup', onKeyUp);
 
 const cameraAnimation = (renderer: THREE.WebGLRenderer, scene: THREE.Scene) => {
-
   const time = performance.now();
 
   if (cameraControls.isLocked === true) {
-
     const delta = (time - prevTime) / 1000;
 
     velocity.x -= velocity.x * 10.0 * delta;
@@ -96,18 +89,10 @@ const cameraAnimation = (renderer: THREE.WebGLRenderer, scene: THREE.Scene) => {
 
     cameraControls.moveRight(- velocity.x * delta);
     cameraControls.moveForward(- velocity.z * delta);
-
-    cameraControls.object.position.y += (velocity.y * delta); // new behavior
-
-    if (cameraControls.object.position.y < 10) {
-      velocity.y = 0;
-      cameraControls.object.position.y = 10;
-    }
   }
 
   prevTime = time;
   renderer.render(scene, camera);
-}
-
+};
 
 export { camera, cameraControls, cameraAnimation};
