@@ -45,7 +45,7 @@ const onKeyDown = (event: KeyboardEvent) => {
       moveRight = true;
       break;
     case 'Space':
-      if (canJump === true) velocity.y += 150;
+      if (canJump === true) velocity.y += 80;
       canJump = false;
       break;
   }
@@ -87,7 +87,7 @@ export const cameraAnimation = (renderer: THREE.WebGLRenderer, scene: THREE.Scen
     velocity.x -= velocity.x * 20.0 * delta;
     velocity.z -= velocity.z * 20.0 * delta;
 
-    velocity.y -= 4 * 100.0 * delta;
+    velocity.y -= 3 * 100.0 * delta;
 
     direction.z = Number(moveForward) - Number(moveBackward);
     direction.x = Number(moveRight) - Number(moveLeft);
