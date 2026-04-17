@@ -2,9 +2,6 @@ import * as THREE from 'three';
 
 console.log(THREE);
 
-// Canvas
-const canvas = document.querySelector('canvas.webgl');
-
 // Scene
 const scene = new THREE.Scene();
 
@@ -25,6 +22,13 @@ const sizes = {
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height);
 camera.position.z = 3;
 scene.add(camera);
+
+// Canvas
+const canvas = document.querySelector('canvas.webgl');
+
+if (!canvas) {
+  throw new Error("Canvas element not found");
+}
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({
