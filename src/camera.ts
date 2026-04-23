@@ -1,121 +1,141 @@
 import * as THREE from 'three';
-import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
-import { SCENE_UTIL } from './utils';
+import { SCENE_UTIL, sizes } from './utils';
 import { getHeightAt } from './floor';
 
-const CAMERA_EYE_HEIGHT = 2; // units above terrain surface
+const cameraDistance_MIN = 10;
+const cameraDistance_MAX = 30;
 
-let moveForward = false;
+let cameraDistance = 12;
+const MOVE_SPEED      = 400;
+const GRAVITY         = 300;
+const JUMP_IMPULSE    = 80;
+const FRICTION        = 20;
+const MOUSE_SENS      = 0.002;
+
+// yaw  = horizontal player/camera angle (radians, CCW from -Z)
+// pitch = vertical camera elevation angle (radians, up from horizontal)
+let yaw   = 0;
+let pitch = 0.4;
+
+const playerPos = new THREE.Vector3(0, 30, 0); // start high; gravity drops us onto terrain
+const velocity  = new THREE.Vector3();
+
+let moveForward  = false;
 let moveBackward = false;
-let moveLeft = false;
-let moveRight = false;
-let canJump = false;
-let prevTime = performance.now();
-const velocity = new THREE.Vector3();
-const direction = new THREE.Vector3();
+let moveLeft     = false;
+let moveRight    = false;
+let sprint       = false;
+let canJump      = false;
+let prevTime     = performance.now();
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+export const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 1, 2000);
 
-const cameraControls = new PointerLockControls(camera, document.body);
-// Start high enough to always be above terrain; gravity will drop us onto it
-cameraControls.object.position.set(0, 30, 10);
-SCENE_UTIL.scene.add(cameraControls.object);
-
-window.document.body.addEventListener('click', () => {
-  cameraControls.lock();
+// --- Pointer lock ---
+let isLocked = false;
+document.body.addEventListener('click', () => document.body.requestPointerLock());
+document.addEventListener('pointerlockchange', () => {
+  isLocked = document.pointerLockElement === document.body;
+});
+document.addEventListener('mousemove', (e: MouseEvent) => {
+  if (!isLocked) return;
+  yaw   += e.movementX * MOUSE_SENS;
+  pitch += e.movementY * MOUSE_SENS;
+  pitch  = Math.max(0.05, Math.min(Math.PI / 2.2, pitch));
+});
+document.addEventListener('wheel', (e: WheelEvent) => {
+  cameraDistance += e.deltaY * 0.05;
+  cameraDistance = Math.max(cameraDistance_MIN, Math.min(cameraDistance_MAX, cameraDistance));
 });
 
-const onKeyDown = (event: KeyboardEvent) => {
-  switch (event.code) {
-    case 'ArrowUp':
-    case 'KeyW':
-      moveForward = true;
-      break;
-
-    case 'ArrowLeft':
-    case 'KeyA':
-      moveLeft = true;
-      break;
-
-    case 'ArrowDown':
-    case 'KeyS':
-      moveBackward = true;
-      break;
-
-    case 'ArrowRight':
-    case 'KeyD':
-      moveRight = true;
-      break;
+// --- Keys ---
+document.addEventListener('keydown', (e: KeyboardEvent) => {
+  switch (e.code) {
+    case 'ArrowUp':    case 'KeyW': moveForward  = true;  break;
+    case 'ArrowDown':  case 'KeyS': moveBackward = true;  break;
+    case 'ArrowLeft':  case 'KeyA': moveLeft     = true;  break;
+    case 'ArrowRight': case 'KeyD': moveRight    = true;  break;
+    case 'ShiftLeft': case 'ShiftRight': sprint = true;  break;
     case 'Space':
-      if (canJump === true) velocity.y += 80;
-      canJump = false;
+      if (canJump) { velocity.y += JUMP_IMPULSE; canJump = false; }
       break;
   }
-};
-
-const onKeyUp = (event: KeyboardEvent) => {
-  switch (event.code) {
-    case 'ArrowUp':
-    case 'KeyW':
-      moveForward = false;
-      break;
-
-    case 'ArrowLeft':
-    case 'KeyA':
-      moveLeft = false;
-      break;
-
-    case 'ArrowDown':
-    case 'KeyS':
-      moveBackward = false;
-      break;
-
-    case 'ArrowRight':
-    case 'KeyD':
-      moveRight = false;
-      break;
+});
+document.addEventListener('keyup', (e: KeyboardEvent) => {
+  switch (e.code) {
+    case 'ArrowUp':    case 'KeyW': moveForward  = false; break;
+    case 'ArrowDown':  case 'KeyS': moveBackward = false; break;
+    case 'ArrowLeft':  case 'KeyA': moveLeft     = false; break;
+    case 'ArrowRight': case 'KeyD': moveRight    = false; break;
+    case 'ShiftLeft': case 'ShiftRight': sprint  = false; break;
   }
-};
+});
 
-document.addEventListener('keydown', onKeyDown);
-document.addEventListener('keyup', onKeyUp);
+// --- Penguin model (player character) ---
+let penguinModel: THREE.Group | null = null;
+let penguinFootOffset = 0; // lifts the model so its lowest point sits on the terrain surface
+SCENE_UTIL.loadGLTF('src/assets/penguin_club_penguin/scene.gltf', (gltf) => {
+  penguinModel = gltf.scene;
+  penguinModel.scale.set(0.5, 0.5, 0.5);
+  const box = new THREE.Box3().setFromObject(penguinModel);
+  penguinFootOffset = -box.min.y;
+});
 
+// --- Animation ---
 export const cameraAnimation = (renderer: THREE.WebGLRenderer, scene: THREE.Scene) => {
-  const time = performance.now();
+  const time  = performance.now();
+  const delta = Math.min((time - prevTime) / 1000, 0.1); // cap so physics don't explode on tab refocus
+  prevTime    = time;
 
-  if (cameraControls.isLocked === true) {
-    const delta = (time - prevTime) / 1000;
+  // Physics always run so the player falls onto the terrain before the mouse is locked
+  velocity.x -= velocity.x * FRICTION * delta;
+  velocity.z -= velocity.z * FRICTION * delta;
+  velocity.y -= GRAVITY * delta;
 
-    velocity.x -= velocity.x * 20.0 * delta;
-    velocity.z -= velocity.z * 20.0 * delta;
-
-    velocity.y -= 3 * 100.0 * delta;
-
-    direction.z = Number(moveForward) - Number(moveBackward);
-    direction.x = Number(moveRight) - Number(moveLeft);
-    direction.normalize(); // this ensures consistent movements in all directions
-
-    if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * delta;
-    if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;
-
-    cameraControls.moveRight(- velocity.x * delta);
-    cameraControls.moveForward(- velocity.z * delta);
-
-    cameraControls.object.position.y += (velocity.y * delta);
-
-    const terrainY = getHeightAt(
-      cameraControls.object.position.x,
-      cameraControls.object.position.z
-    );
-    const floorY = terrainY + CAMERA_EYE_HEIGHT;
-
-    if (cameraControls.object.position.y < floorY) {
-      velocity.y = 0;
-      cameraControls.object.position.y = floorY;
-      canJump = true;
+  if (isLocked) {
+    // Resolve WASD into a world-space horizontal direction based on current yaw.
+    // Forward = (sin(yaw), 0, -cos(yaw)), Right = (cos(yaw), 0, sin(yaw))
+    const sinY = Math.sin(yaw);
+    const cosY = Math.cos(yaw);
+    let dx = 0, dz = 0;
+    if (moveForward)  { dx += sinY; dz -= cosY; }
+    if (moveBackward) { dx -= sinY; dz += cosY; }
+    if (moveRight)    { dx += cosY; dz += sinY; }
+    if (moveLeft)     { dx -= cosY; dz -= sinY; }
+    const len = Math.sqrt(dx * dx + dz * dz);
+    if (len > 0) {
+      const speed = MOVE_SPEED * (sprint ? 2 : 1);
+      velocity.x += (dx / len) * speed * delta;
+      velocity.z += (dz / len) * speed * delta;
     }
   }
 
-  prevTime = time;
+  playerPos.x += velocity.x * delta;
+  playerPos.z += velocity.z * delta;
+  playerPos.y += velocity.y * delta;
+
+  const terrainY = getHeightAt(playerPos.x, playerPos.z);
+  if (playerPos.y < terrainY) {
+    velocity.y = 0;
+    playerPos.y = terrainY;
+    canJump = true;
+  }
+
+  // Penguin sits at player position, rotated to face the camera's forward direction.
+  // rotation.y = PI - yaw maps our yaw convention onto a GLTF model that faces +Z at rest.
+  if (penguinModel) {
+    penguinModel.position.set(playerPos.x, playerPos.y + penguinFootOffset, playerPos.z);
+    penguinModel.rotation.y = Math.PI - yaw;
+  }
+
+  // Camera orbits the player: hDist behind, vDist above.
+  const hDist = cameraDistance * Math.cos(pitch);
+  const vDist = cameraDistance * Math.sin(pitch);
+  camera.position.set(
+    playerPos.x - Math.sin(yaw) * hDist,
+    playerPos.y + vDist,
+    playerPos.z + Math.cos(yaw) * hDist,
+  );
+  camera.lookAt(playerPos.x, playerPos.y + 1, playerPos.z);
+
   renderer.render(scene, camera);
 };
