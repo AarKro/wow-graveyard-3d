@@ -1,12 +1,7 @@
-import * as THREE from 'three';
 import { SCENE_UTIL } from './utils';
+import { buildFloor } from './floor';
 
-let floorGeometry = new THREE.PlaneGeometry(2000, 2000, 100, 100);
-floorGeometry.rotateX(- Math.PI / 2);
-const floorMaterial = new THREE.MeshPhongMaterial({ color: 0xFFFFFF });
-const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-floor.receiveShadow = true;
-SCENE_UTIL.scene.add(floor);
+buildFloor();
 
 SCENE_UTIL.loadGLTF('src/assets/penguin_club_penguin/scene.gltf', (gltf) => {
   gltf.scene.position.set(0, 2, 0);
