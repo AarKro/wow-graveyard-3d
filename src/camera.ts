@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import { SCENE_UTIL } from './utils';
+import { getHeightAt } from './floor';
 
-const CAMERA_DEFAULT_Y = 2;
+const CAMERA_EYE_HEIGHT = 2; // units above terrain surface
 
 let moveForward = false;
 let moveBackward = false;
@@ -16,7 +17,8 @@ const direction = new THREE.Vector3();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
 
 const cameraControls = new PointerLockControls(camera, document.body);
-cameraControls.object.position.set(0, CAMERA_DEFAULT_Y, 10);
+// Start high enough to always be above terrain; gravity will drop us onto it
+cameraControls.object.position.set(0, 30, 10);
 SCENE_UTIL.scene.add(cameraControls.object);
 
 window.document.body.addEventListener('click', () => {
@@ -101,9 +103,15 @@ export const cameraAnimation = (renderer: THREE.WebGLRenderer, scene: THREE.Scen
 
     cameraControls.object.position.y += (velocity.y * delta);
 
-    if (cameraControls.object.position.y < CAMERA_DEFAULT_Y)  {
+    const terrainY = getHeightAt(
+      cameraControls.object.position.x,
+      cameraControls.object.position.z
+    );
+    const floorY = terrainY + CAMERA_EYE_HEIGHT;
+
+    if (cameraControls.object.position.y < floorY) {
       velocity.y = 0;
-      cameraControls.object.position.y = CAMERA_DEFAULT_Y;
+      cameraControls.object.position.y = floorY;
       canJump = true;
     }
   }
