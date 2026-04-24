@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { SCENE_UTIL, sizes } from './utils';
 import { getHeightAt } from './floor';
+import { updateClouds } from './clouds';
 
 const cameraDistance_MIN = 10;
 const cameraDistance_MAX = 30;
@@ -72,12 +73,27 @@ document.addEventListener('keyup', (e: KeyboardEvent) => {
 
 // --- Penguin model (player character) ---
 let penguinModel: THREE.Group | null = null;
-let penguinFootOffset = 0; // lifts the model so its lowest point sits on the terrain surface
+let penguinFootOffset = 0;
+let mixer: THREE.AnimationMixer | null = null;
+let idleAction: THREE.AnimationAction | null = null;
+let walkAction: THREE.AnimationAction | null = null;
+let isMoving = false;
+
 SCENE_UTIL.loadGLTF('src/assets/penguin_club_penguin/scene.gltf', (gltf) => {
   penguinModel = gltf.scene;
   penguinModel.scale.set(0.5, 0.5, 0.5);
   const box = new THREE.Box3().setFromObject(penguinModel);
   penguinFootOffset = -box.min.y;
+
+  if (gltf.animations.length > 0) {
+    mixer = new THREE.AnimationMixer(penguinModel);
+    const find = (name: string) => gltf.animations.find(a => a.name.toLowerCase().includes(name));
+    const idleClip = find('idle') ?? gltf.animations[0];
+    const walkClip = find('walk') ?? find('run') ?? gltf.animations[1] ?? gltf.animations[0];
+    idleAction = mixer.clipAction(idleClip);
+    walkAction = mixer.clipAction(walkClip);
+    idleAction.play();
+  }
 });
 
 // --- Animation ---
@@ -119,6 +135,23 @@ export const cameraAnimation = (renderer: THREE.WebGLRenderer, scene: THREE.Scen
     playerPos.y = terrainY;
     canJump = true;
   }
+
+  // Crossfade between idle and walk animations based on horizontal movement.
+  const moving = moveForward || moveBackward || moveLeft || moveRight;
+  if (mixer) {
+    mixer.update(delta);
+    if (moving !== isMoving) {
+      isMoving = moving;
+      const from = isMoving ? idleAction : walkAction;
+      const to   = isMoving ? walkAction : idleAction;
+      if (from && to) {
+        to.reset().fadeIn(0.2);
+        from.fadeOut(0.2);
+      }
+    }
+  }
+
+  updateClouds(delta);
 
   // Penguin sits at player position, rotated to face the camera's forward direction.
   // rotation.y = PI - yaw maps our yaw convention onto a GLTF model that faces +Z at rest.

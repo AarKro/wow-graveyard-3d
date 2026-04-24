@@ -3,8 +3,8 @@ import { sizes, SCENE_UTIL} from './utils';
 import { cameraAnimation } from './camera';
 import './world.ts';
 
-SCENE_UTIL.scene.background = new THREE.Color('white');
-// SCENE_UTIL.scene.fog = new THREE.Fog(0xffffff, 0, 750);
+SCENE_UTIL.scene.background = new THREE.Color(0xdce8f0);
+SCENE_UTIL.scene.fog = new THREE.FogExp2(0xdce8f0, 0.0010);
 
 const light = new THREE.HemisphereLight(0xeeeeff, 0x777788, 2.5);
 light.position.set(0.5, 1, 0.75);

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { createNoise2D } from 'simplex-noise';
-import { SCENE_UTIL } from './utils';
+import { SCENE_UTIL, mulberry32 } from './utils';
 
 export const TILE_SIZE = 2;
 export const GRID_SIZE = 2000;
@@ -12,12 +12,6 @@ const NOISE_SCALE = 0.015;
 const BOX_DEPTH = 20;
 
 const SEED = 42;
-const mulberry32 = (s: number) => () => {
-  s |= 0; s = s + 0x6D2B79F5 | 0;
-  let t = Math.imul(s ^ s >>> 15, 1 | s);
-  t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-  return ((t ^ t >>> 14) >>> 0) / 4294967296;
-};
 const noise2D = createNoise2D(mulberry32(SEED));
 
 export const heightMap: number[][] = Array.from({ length: GRID_SIZE }, (_, gz) =>
