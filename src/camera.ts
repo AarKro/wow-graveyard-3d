@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { SCENE_UTIL, sizes } from './utils';
 import { getHeightAt } from './floor';
 import { updateClouds } from './clouds';
+import { updateSun } from './sun';
 
 const cameraDistance_MIN = 10;
 const cameraDistance_MAX = 30;
@@ -41,7 +42,7 @@ document.addEventListener('mousemove', (e: MouseEvent) => {
   if (!isLocked) return;
   yaw   += e.movementX * MOUSE_SENS;
   pitch += e.movementY * MOUSE_SENS;
-  pitch  = Math.max(0.05, Math.min(Math.PI / 2.2, pitch));
+  pitch  = Math.max(-Math.PI * 0.45, Math.min(Math.PI / 2.2, pitch));
 });
 document.addEventListener('wheel', (e: WheelEvent) => {
   cameraDistance += e.deltaY * 0.05;
@@ -74,6 +75,7 @@ document.addEventListener('keyup', (e: KeyboardEvent) => {
 // --- Penguin model (player character) ---
 let penguinModel: THREE.Group | null = null;
 let penguinFootOffset = 0;
+let penguinMaterials: THREE.Material[] = [];
 let mixer: THREE.AnimationMixer | null = null;
 let idleAction: THREE.AnimationAction | null = null;
 let walkAction: THREE.AnimationAction | null = null;
@@ -84,6 +86,19 @@ SCENE_UTIL.loadGLTF('src/assets/penguin_club_penguin/scene.gltf', (gltf) => {
   penguinModel.scale.set(0.5, 0.5, 0.5);
   const box = new THREE.Box3().setFromObject(penguinModel);
   penguinFootOffset = -box.min.y;
+
+  // Cache materials and pre-enable transparency so we can fade when camera is close
+  penguinModel.traverse((node) => {
+    if ((node as THREE.Mesh).isMesh) {
+      const mats = Array.isArray((node as THREE.Mesh).material)
+        ? (node as THREE.Mesh).material as THREE.Material[]
+        : [(node as THREE.Mesh).material as THREE.Material];
+      for (const mat of mats) {
+        mat.transparent = true;
+        penguinMaterials.push(mat);
+      }
+    }
+  });
 
   if (gltf.animations.length > 0) {
     mixer = new THREE.AnimationMixer(penguinModel);
@@ -97,7 +112,7 @@ SCENE_UTIL.loadGLTF('src/assets/penguin_club_penguin/scene.gltf', (gltf) => {
 });
 
 // --- Animation ---
-export const cameraAnimation = (renderer: THREE.WebGLRenderer, scene: THREE.Scene) => {
+export const cameraAnimation = () => {
   const time  = performance.now();
   const delta = Math.min((time - prevTime) / 1000, 0.1); // cap so physics don't explode on tab refocus
   prevTime    = time;
@@ -152,13 +167,7 @@ export const cameraAnimation = (renderer: THREE.WebGLRenderer, scene: THREE.Scen
   }
 
   updateClouds(delta);
-
-  // Penguin sits at player position, rotated to face the camera's forward direction.
-  // rotation.y = PI - yaw maps our yaw convention onto a GLTF model that faces +Z at rest.
-  if (penguinModel) {
-    penguinModel.position.set(playerPos.x, playerPos.y + penguinFootOffset, playerPos.z);
-    penguinModel.rotation.y = Math.PI - yaw;
-  }
+  updateSun(playerPos);
 
   // Camera orbits the player: hDist behind, vDist above.
   const hDist = cameraDistance * Math.cos(pitch);
@@ -168,7 +177,25 @@ export const cameraAnimation = (renderer: THREE.WebGLRenderer, scene: THREE.Scen
     playerPos.y + vDist,
     playerPos.z + Math.cos(yaw) * hDist,
   );
+
+  // Prevent camera from clipping into terrain when pitched low
+  const camGroundY = getHeightAt(camera.position.x, camera.position.z);
+  if (camera.position.y < camGroundY + 0.5) camera.position.y = camGroundY + 0.5;
+
   camera.lookAt(playerPos.x, playerPos.y + 1, playerPos.z);
 
-  renderer.render(scene, camera);
+  // Fade penguin out when camera gets close (e.g. when pitched down and zoomed in)
+  if (penguinMaterials.length > 0) {
+    const effectiveDist = camera.position.distanceTo(playerPos);
+    const opacity = Math.max(0, Math.min(1, (effectiveDist - 2) / 4));
+    for (const mat of penguinMaterials) mat.opacity = opacity;
+  }
+
+  // Penguin sits at player position, rotated to face the camera's forward direction.
+  // rotation.y = PI - yaw maps our yaw convention onto a GLTF model that faces +Z at rest.
+  if (penguinModel) {
+    penguinModel.position.set(playerPos.x, playerPos.y + penguinFootOffset, playerPos.z);
+    penguinModel.rotation.y = Math.PI - yaw;
+  }
+
 };
