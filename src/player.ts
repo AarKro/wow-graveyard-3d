@@ -60,7 +60,7 @@ document.addEventListener('keyup', (e: KeyboardEvent) => {
   }
 });
 
-export const cameraAnimation = () => {
+export const updatePlayer = () => {
   const time  = performance.now();
   const delta = Math.min((time - prevTime) / 1000, 0.1);
   prevTime    = time;
@@ -70,17 +70,17 @@ export const cameraAnimation = () => {
   velocity.y -= GRAVITY * delta;
 
   if (isLocked) {
-    const sinY = Math.sin(yaw);
-    const cosY = Math.cos(yaw);
-    let dx = 0, dz = 0;
-    if (moveForward)  { dx += sinY; dz -= cosY; }
-    if (moveBackward) { dx -= sinY; dz += cosY; }
-    if (moveRight)    { dx += cosY; dz += sinY; }
-    if (moveLeft)     { dx -= cosY; dz -= sinY; }
-    const len = Math.sqrt(dx * dx + dz * dz);
-    if (len > 0) {
-      velocity.x += (dx / len) * MOVE_SPEED * delta;
-      velocity.z += (dz / len) * MOVE_SPEED * delta;
+    const sinYaw = Math.sin(yaw);
+    const cosYaw = Math.cos(yaw);
+    let dirX = 0, dirZ = 0;
+    if (moveForward)  { dirX += sinYaw; dirZ -= cosYaw; }
+    if (moveBackward) { dirX -= sinYaw; dirZ += cosYaw; }
+    if (moveRight)    { dirX += cosYaw; dirZ += sinYaw; }
+    if (moveLeft)     { dirX -= cosYaw; dirZ -= sinYaw; }
+    const dirLength = Math.sqrt(dirX * dirX + dirZ * dirZ);
+    if (dirLength > 0) {
+      velocity.x += (dirX / dirLength) * MOVE_SPEED * delta;
+      velocity.z += (dirZ / dirLength) * MOVE_SPEED * delta;
     }
   }
 
@@ -95,14 +95,14 @@ export const cameraAnimation = () => {
     canJump     = true;
   }
 
-  for (const c of colliders) {
-    const dx = playerPos.x - c.x;
-    const dz = playerPos.z - c.z;
-    const distSq = dx * dx + dz * dz;
-    if (distSq < c.radius * c.radius && distSq > 0) {
-      const dist = Math.sqrt(distSq);
-      playerPos.x = c.x + (dx / dist) * c.radius;
-      playerPos.z = c.z + (dz / dist) * c.radius;
+  for (const collider of colliders) {
+    const offsetX = playerPos.x - collider.x;
+    const offsetZ = playerPos.z - collider.z;
+    const distSq  = offsetX * offsetX + offsetZ * offsetZ;
+    if (distSq < collider.radius * collider.radius && distSq > 0) {
+      const dist  = Math.sqrt(distSq);
+      playerPos.x = collider.x + (offsetX / dist) * collider.radius;
+      playerPos.z = collider.z + (offsetZ / dist) * collider.radius;
     }
   }
 

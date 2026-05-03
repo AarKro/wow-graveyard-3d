@@ -39,10 +39,10 @@ export const addGraveLabel = (
 
   top.append(name, subtitle, quote);
   attach(top, gravePos.clone().add(new THREE.Vector3(0, 4, 0)));
-  
+
   const bottom = document.createElement('div');
   bottom.className = 'grave-label';
-  
+
   const dates = document.createElement('p');
   dates.className = 'grave-label__dates';
   dates.textContent = `${data.fromDate} – ${data.toDate}`;
@@ -55,9 +55,9 @@ export const addGraveLabel = (
 
 export const updateLabels = (playerPos: THREE.Vector3): void => {
   for (const entry of entries) {
-    const dx = playerPos.x - entry.worldPos.x;
-    const dz = playerPos.z - entry.worldPos.z;
-    const opacity = Math.sqrt(dx * dx + dz * dz) < entry.triggerRadius ? '1' : '0';
+    const deltaX  = playerPos.x - entry.worldPos.x;
+    const deltaZ  = playerPos.z - entry.worldPos.z;
+    const opacity = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ) < entry.triggerRadius ? '1' : '0';
     for (const el of entry.elements) el.style.opacity = opacity;
   }
 };

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { GLTF, GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 export const mulberry32 = (s: number) => () => {
   s |= 0; s = s + 0x6D2B79F5 | 0;
@@ -9,8 +9,8 @@ export const mulberry32 = (s: number) => () => {
 };
 
 export const sizes = {
-    width: window.innerWidth,
-    height: window.innerHeight
+  width: window.innerWidth,
+  height: window.innerHeight,
 };
 
 export const SCENE_UTIL = {

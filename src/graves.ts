@@ -27,7 +27,7 @@ const pickPosition = (placed: Array<{ x: number; z: number }>): { x: number; z: 
   for (let i = 0; i < 200; i++) {
     const x = (rng() * 2 - 1) * SPREAD;
     const z = (rng() * 2 - 1) * SPREAD;
-    if (placed.every(p => Math.hypot(p.x - x, p.z - z) >= MIN_SPACING)) return { x, z };
+    if (placed.every(existing => Math.hypot(existing.x - x, existing.z - z) >= MIN_SPACING)) return { x, z };
   }
   return { x: (rng() * 2 - 1) * SPREAD, z: (rng() * 2 - 1) * SPREAD };
 };

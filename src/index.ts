@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { sizes, SCENE_UTIL} from './utils';
-import { camera, cameraAnimation } from './camera';
+import { camera, updatePlayer } from './player';
 import { sunWorldPos } from './sun';
-import { initComposer, renderGodRays } from './godRays';
+import { initComposer, renderGodRays } from './god-rays';
 import { labelRenderer } from './labels';
 import './world.ts';
 
@@ -24,7 +24,7 @@ renderer.setSize(sizes.width, sizes.height);
 const { composer, godRaysPass } = initComposer(renderer, SCENE_UTIL.scene, camera);
 
 renderer.setAnimationLoop(() => {
-  cameraAnimation();
+  updatePlayer();
   //renderGodRays(renderer, sunWorldPos, camera, godRaysPass);
   composer.render();
   labelRenderer.render(SCENE_UTIL.scene, camera);
