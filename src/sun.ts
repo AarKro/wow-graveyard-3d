@@ -2,23 +2,24 @@ import * as THREE from 'three';
 import { SCENE_UTIL } from './utils';
 
 // Direction FROM the world TOWARD the sun (normalized)
-export const SUN_DIRECTION = new THREE.Vector3(2.0, 1.0, -1.0).normalize();
+export const SUN_DIRECTION = new THREE.Vector3(1.0, 1.6, -0.5).normalize();
 
 const SUN_DISTANCE  = 600;  // units from player
-const SHADOW_RANGE  = 500;  // orthographic shadow camera half-size
+const SHADOW_RANGE  = 600;  // orthographic shadow camera half-size
 
 // ── Directional light ────────────────────────────────────────────────────────
-export const sunLight = new THREE.DirectionalLight(0xfffde7, 1.4);
+export const sunLight = new THREE.DirectionalLight(0xfffde7, 2.5);
 sunLight.castShadow = true;
 sunLight.shadow.mapSize.width  = 2048;
 sunLight.shadow.mapSize.height = 2048;
 sunLight.shadow.radius = 2;
+sunLight.shadow.bias   = -0.001;
 const sc = sunLight.shadow.camera;
 sc.left   = -SHADOW_RANGE;
 sc.right  =  SHADOW_RANGE;
 sc.top    =  SHADOW_RANGE;
 sc.bottom = -SHADOW_RANGE;
-sc.near   = 1;
+sc.near   = -200;
 sc.far    = 1500;
 sc.updateProjectionMatrix();
 SCENE_UTIL.scene.add(sunLight);
