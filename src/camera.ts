@@ -106,7 +106,7 @@ export const cameraAnimation = () => {
     }
   }
 
-  updateClouds(delta);
+  updateClouds(delta, playerPos);
   updateSun(playerPos);
   updateLabels(playerPos);
 
