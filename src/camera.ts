@@ -2,11 +2,12 @@ import * as THREE from 'three';
 import { sizes } from './utils';
 import { getHeightAt } from './floor';
 import { colliders } from './colliders';
+import { updateLabels } from './labels';
 import { updateClouds } from './clouds';
 import { updateSun } from './sun';
 
 const EYE_HEIGHT   = 4;
-const MOVE_SPEED   = 400;
+const MOVE_SPEED   = 300;
 const GRAVITY      = 300;
 const JUMP_IMPULSE = 80;
 const FRICTION     = 20;
@@ -107,6 +108,7 @@ export const cameraAnimation = () => {
 
   updateClouds(delta);
   updateSun(playerPos);
+  updateLabels(playerPos);
 
   camera.position.set(playerPos.x, playerPos.y + EYE_HEIGHT, playerPos.z);
   camera.lookAt(

@@ -1,3 +1,17 @@
+@font-face {
+  font-family: 'ChakraPetch';
+  font-weight: 700;
+  font-display: swap;
+  src: url('./src/assets/fonts/ChakraPetch-Bold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'ChakraPetch';
+  font-weight: 500;
+  font-display: swap;
+  src: url('./src/assets/fonts/ChakraPetch-Medium.woff2') format('woff2');
+}
+
 * {
   margin: 0;
   box-sizing: border-box;
@@ -5,4 +19,43 @@
 
 body {
   overflow: hidden;
+}
+
+.label-renderer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.grave-label {
+  font-family: 'ChakraPetch', Georgia, serif;
+  font-weight: 500;
+  color: white;
+  text-align: center;
+  line-height: 1.7;
+  opacity: 0;
+  transition: opacity 1s ease;
+  pointer-events: none;
+  white-space: nowrap;
+  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+}
+
+.grave-label__name {
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.grave-label__subtitle {
+  font-size: 26px;
+}
+
+.grave-label__dates {
+  font-size: 24px;
+}
+
+.grave-label__quote {
+  font-size: 26px;
+  font-weight: 700;
 }

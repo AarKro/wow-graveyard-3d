@@ -3,6 +3,7 @@ import { sizes, SCENE_UTIL} from './utils';
 import { camera, cameraAnimation } from './camera';
 import { sunWorldPos } from './sun';
 import { initComposer, renderGodRays } from './godRays';
+import { labelRenderer } from './labels';
 import './world.ts';
 
 SCENE_UTIL.scene.background = new THREE.Color(0xdce8f0);
@@ -26,4 +27,5 @@ renderer.setAnimationLoop(() => {
   cameraAnimation();
   //renderGodRays(renderer, sunWorldPos, camera, godRaysPass);
   composer.render();
+  labelRenderer.render(SCENE_UTIL.scene, camera);
 });
