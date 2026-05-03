@@ -1,5 +1,6 @@
 {
   "name": "wow-graveyard-3d",
+  "base": "https://aarkro.github.io/wow-graveyard-3d/",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
