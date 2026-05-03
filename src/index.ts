@@ -18,7 +18,7 @@ if (!canvas) throw new Error("Canvas element not found");
 
 const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.setSize(sizes.width, sizes.height);
 
 const { composer, godRaysPass } = initComposer(renderer, SCENE_UTIL.scene, camera);

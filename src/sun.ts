@@ -2,37 +2,46 @@ import * as THREE from 'three';
 import { SCENE_UTIL } from './utils';
 
 // Direction FROM the world TOWARD the sun (normalized)
-export const SUN_DIRECTION = new THREE.Vector3(1.0, 1.6, -0.5).normalize();
+export const SUN_DIRECTION = new THREE.Vector3(-2.0, 1.0, 0.3).normalize();
 
-const SUN_DISTANCE  = 600;  // units from player
-const SHADOW_RANGE  = 600;  // orthographic shadow camera half-size
+const SUN_DISTANCE = 600; // units from player
 
-// ── Directional light ────────────────────────────────────────────────────────
-export const sunLight = new THREE.DirectionalLight(0xfffde7, 2.5);
+// ── Near light — crisp shadows for close objects (gravestones, placed items) ─
+export const sunLight = new THREE.DirectionalLight(0xffb347, 2.0);
 sunLight.castShadow = true;
-sunLight.shadow.mapSize.width  = 2048;
-sunLight.shadow.mapSize.height = 2048;
-sunLight.shadow.radius = 2;
-sunLight.shadow.bias   = -0.001;
-const sc = sunLight.shadow.camera;
-sc.left   = -SHADOW_RANGE;
-sc.right  =  SHADOW_RANGE;
-sc.top    =  SHADOW_RANGE;
-sc.bottom = -SHADOW_RANGE;
-sc.near   = -200;
-sc.far    = 1500;
-sc.updateProjectionMatrix();
+sunLight.shadow.mapSize.width  = 4096;
+sunLight.shadow.mapSize.height = 4096;
+sunLight.shadow.bias = -0.0005;
+const nc = sunLight.shadow.camera;
+nc.left = nc.bottom = -90;
+nc.right = nc.top   =  90;
+nc.near  = -200;
+nc.far   =  1500;
+nc.updateProjectionMatrix();
 SCENE_UTIL.scene.add(sunLight);
 SCENE_UTIL.scene.add(sunLight.target);
 
+// ── Far light — cloud shadows on terrain ─────────────────────────────────────
+const farSunLight = new THREE.DirectionalLight(0xffb347, 0.5);
+farSunLight.castShadow = true;
+farSunLight.shadow.mapSize.width  = 2048;
+farSunLight.shadow.mapSize.height = 2048;
+farSunLight.shadow.bias = -0.001;
+const fc = farSunLight.shadow.camera;
+fc.left = fc.bottom = -700;
+fc.right = fc.top   =  700;
+fc.near  = -200;
+fc.far   =  1500;
+fc.updateProjectionMatrix();
+SCENE_UTIL.scene.add(farSunLight);
+SCENE_UTIL.scene.add(farSunLight.target);
+
 // ── Sun visual ───────────────────────────────────────────────────────────────
-// Core: bright white disc
 const coreMesh = new THREE.Mesh(
   new THREE.PlaneGeometry(55, 55),
   new THREE.MeshBasicMaterial({ color: 0xffffff, fog: false, depthWrite: false }),
 );
 
-// Halo: larger soft golden ring behind the core
 const haloMesh = new THREE.Mesh(
   new THREE.PlaneGeometry(130, 130),
   new THREE.MeshBasicMaterial({ color: 0xffe060, fog: false, transparent: true, opacity: 0.22, depthWrite: false }),
@@ -51,9 +60,13 @@ export const updateSun = (playerPos: THREE.Vector3): void => {
   sunWorldPos.copy(playerPos).addScaledVector(SUN_DIRECTION, SUN_DISTANCE);
 
   sunGroup.position.copy(sunWorldPos);
-  sunGroup.lookAt(playerPos); // face toward the camera
+  sunGroup.lookAt(playerPos);
 
   sunLight.position.copy(sunWorldPos);
   sunLight.target.position.copy(playerPos);
   sunLight.target.updateMatrixWorld();
+
+  farSunLight.position.copy(sunWorldPos);
+  farSunLight.target.position.copy(playerPos);
+  farSunLight.target.updateMatrixWorld();
 };
