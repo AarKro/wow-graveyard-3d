@@ -35,8 +35,8 @@ export const getHeightAt = (worldX: number, worldZ: number): number => {
   return heightMap[cz][cx];
 };
 
-const COLOR_LOW  = new THREE.Color(0x2a4d1a);
-const COLOR_HIGH = new THREE.Color(0x8fc45a);
+const COLOR_LOW  = new THREE.Color(0x6b8050);
+const COLOR_HIGH = new THREE.Color(0x9eb87a);
 
 const buildChunk = (
   cx: number,
@@ -46,7 +46,6 @@ const buildChunk = (
 ): void => {
   const mesh = new THREE.InstancedMesh(geometry, material, CHUNK_SIZE * CHUNK_SIZE);
   mesh.receiveShadow = true;
-  mesh.castShadow = true;
 
   const matrix = new THREE.Matrix4();
   const color  = new THREE.Color();
