@@ -8,8 +8,8 @@ import { updateSun } from './sun';
 
 const EYE_HEIGHT   = 4;
 const MOVE_SPEED   = 300;
-const GRAVITY      = 300;
-const JUMP_IMPULSE = 80;
+const GRAVITY      = 150;
+const JUMP_IMPULSE = 50;
 const FRICTION     = 20;
 const MOUSE_SENS   = 0.002;
 
