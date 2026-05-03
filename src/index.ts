@@ -24,6 +24,6 @@ const { composer, godRaysPass } = initComposer(renderer, SCENE_UTIL.scene, camer
 
 renderer.setAnimationLoop(() => {
   cameraAnimation();
-  renderGodRays(renderer, sunWorldPos, camera, godRaysPass);
+  //renderGodRays(renderer, sunWorldPos, camera, godRaysPass);
   composer.render();
 });
