@@ -1,21 +1,12 @@
 import * as THREE from 'three';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import { sizes, SCENE_UTIL } from './utils';
+import type { GraveData } from './graves';
 
 export const labelRenderer = new CSS2DRenderer();
 labelRenderer.setSize(sizes.width, sizes.height);
 labelRenderer.domElement.classList.add('label-renderer');
 document.body.appendChild(labelRenderer.domElement);
-
-export type GraveData = {
-  name: string;
-  race: string;
-  characterClass: string;
-  level: number;
-  from: string;
-  to: string;
-  quote: string;
-};
 
 type LabelEntry = { elements: HTMLElement[]; worldPos: THREE.Vector3; triggerRadius: number };
 const entries: LabelEntry[] = [];
@@ -40,7 +31,7 @@ export const addGraveLabel = (
 
   const subtitle = document.createElement('p');
   subtitle.className = 'grave-label__subtitle';
-  subtitle.textContent = `${data.race} ${data.characterClass} — lvl ${data.level}`;
+  subtitle.textContent = `${data.race} ${data.class} — lvl ${data.level}`;
 
   const quote = document.createElement('p');
   quote.className = 'grave-label__quote';
@@ -54,7 +45,7 @@ export const addGraveLabel = (
   
   const dates = document.createElement('p');
   dates.className = 'grave-label__dates';
-  dates.textContent = `${data.from} – ${data.to}`;
+  dates.textContent = `${data.fromDate} – ${data.toDate}`;
 
   bottom.append(dates);
   attach(bottom, gravePos.clone());
