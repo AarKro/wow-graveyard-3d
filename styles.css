@@ -38,7 +38,6 @@ body {
   opacity: 0;
   transition: opacity 1s ease;
   pointer-events: none;
-  white-space: nowrap;
   text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
 }
 
@@ -58,4 +57,5 @@ body {
 .grave-label__quote {
   font-size: 26px;
   font-weight: 700;
+  max-width: 50vw;
 }
