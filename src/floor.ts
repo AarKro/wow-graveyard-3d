@@ -49,6 +49,7 @@ const buildChunk = (
 ): void => {
   const mesh = new THREE.InstancedMesh(geometry, material, CHUNK_SIZE * CHUNK_SIZE);
   mesh.receiveShadow = true;
+  mesh.castShadow = true;
 
   const matrix = new THREE.Matrix4();
   const color = new THREE.Color();
