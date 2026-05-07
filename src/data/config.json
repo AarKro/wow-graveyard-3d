@@ -10,7 +10,7 @@
     "tileSize": 1,
     "heightScale": 20,
     "noiseScale": 0.015,
-    "heightFalloff": 2,
+    "heightFalloff": 1.5,
     "tileDepth": 10,
     "colorLow": "#6b8050",
     "colorHigh": "#9eb87a"
@@ -89,22 +89,22 @@
     "trees": {
       "seed": 7,
       "models": ["tree_1.gltf", "tree_2.gltf", "tree_3.gltf"],
-      "innerRadius": 100,
+      "innerRadius": 20,
       "outerRadius": 250,
       "count": 1500,
-      "spacingInner": 10,
+      "spacingInner": 30,
       "spacingOuter": 4,
-      "colliderRadius": 1.5,
+      "colliderRadius": 2,
       "scaleMin": 0.8,
       "scaleMax": 1.6
     },
     "bushes": {
       "seed": 13,
       "models": ["bush_1.gltf", "bush_2.gltf", "bush_3.gltf"],
-      "innerRadius": 90,
+      "innerRadius": 15,
       "outerRadius": 200,
       "count": 700,
-      "spacingInner": 6,
+      "spacingInner": 25,
       "spacingOuter": 3,
       "scaleMin": 0.8,
       "scaleMax": 1.4
