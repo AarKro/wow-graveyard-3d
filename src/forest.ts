@@ -1,18 +1,18 @@
-import * as THREE from 'three';
 import { GLTF } from 'three/addons/loaders/GLTFLoader.js';
+import * as THREE from 'three';
 import { SCENE_UTIL, mulberry32 } from './utils';
 import { getHeightAt } from './floor';
 import { colliders } from './colliders';
 
-const TREE_INNER_RADIUS = 60;
-const TREE_OUTER_RADIUS = 150;
-const TREE_COUNT = 350;
+const TREE_INNER_RADIUS = 100;
+const TREE_OUTER_RADIUS = 250;
+const TREE_COUNT = 900;
 const TREE_MIN_SPACING = 6;
 const TREE_COLLIDER_RADIUS = 1.5;
 
-const BUSH_INNER_RADIUS = 50;
-const BUSH_OUTER_RADIUS = 150;
-const BUSH_COUNT = 200;
+const BUSH_INNER_RADIUS = 90;
+const BUSH_OUTER_RADIUS = 250;
+const BUSH_COUNT = 500;
 const BUSH_MIN_SPACING = 4;
 
 const CARDINAL_ROTATIONS = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2];
@@ -61,10 +61,11 @@ const placeInstances = (
 
     const { x, z } = pos;
     const y = getHeightAt(x, z);
+    const scale = 0.8 + rng() * 0.4;
     const model = gltfs[Math.floor(rng() * gltfs.length)].scene.clone(true);
     model.position.set(x, y, z);
     model.rotation.y = CARDINAL_ROTATIONS[Math.floor(rng() * 4)];
-    model.scale.setScalar(0.8 + rng() * 0.4);
+    model.scale.setScalar(scale);
     SCENE_UTIL.scene.add(model);
 
     if (addCollider) colliders.push({ x, z, radius: colliderRadius });
