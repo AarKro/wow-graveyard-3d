@@ -1,18 +1,19 @@
 import * as THREE from 'three';
 import { createNoise2D } from 'simplex-noise';
-import { SCENE_UTIL, mulberry32 } from './utils';
+import { SCENE_UTIL, mulberry32, resolveSeed } from './utils';
+import config from './data/config.json';
 
-export const TILE_SIZE = 2;
-export const GRID_SIZE = 400;
-export const CHUNK_SIZE = 16;                       // tiles per chunk side; 400/16 = 25 chunks per axis
-export const WORLD_CHUNK_SIZE = CHUNK_SIZE * TILE_SIZE; // 32 world units per chunk
+export const TILE_SIZE = config.world.tileSize;
+export const GRID_SIZE = config.world.gridSize;
+export const CHUNK_SIZE = config.world.chunkSize;
+export const WORLD_CHUNK_SIZE = CHUNK_SIZE * TILE_SIZE;
 export const HALF_WORLD = (GRID_SIZE * TILE_SIZE) / 2;
 
-const HEIGHT_SCALE = 10;
-const NOISE_SCALE = 0.015;
-const BOX_DEPTH = 10;
+const HEIGHT_SCALE = config.terrain.heightScale;
+const NOISE_SCALE = config.terrain.noiseScale;
+const BOX_DEPTH = config.terrain.tileDepth;
+const SEED = resolveSeed(config.terrain.seed);
 
-const SEED = 42;
 const noise2D = createNoise2D(mulberry32(SEED));
 
 export const heightMap: number[][] = Array.from({ length: GRID_SIZE }, (_, gridZ) =>
@@ -36,8 +37,8 @@ export const getHeightAt = (worldX: number, worldZ: number): number => {
   return heightMap[clampedZ][clampedX];
 };
 
-const COLOR_LOW = new THREE.Color(0x6b8050);
-const COLOR_HIGH = new THREE.Color(0x9eb87a);
+const COLOR_LOW = new THREE.Color(config.terrain.colorLow);
+const COLOR_HIGH = new THREE.Color(config.terrain.colorHigh);
 
 const buildChunk = (
   chunkX: number,
@@ -73,8 +74,6 @@ const buildChunk = (
 
   mesh.instanceMatrix.needsUpdate = true;
   mesh.instanceColor!.needsUpdate = true;
-  // Computes an accurate bounding sphere from all instance matrices so Three.js
-  // can frustum-cull this chunk when it's off-screen.
   mesh.computeBoundingSphere();
   SCENE_UTIL.scene.add(mesh);
 };

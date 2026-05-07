@@ -1,14 +1,16 @@
 import * as THREE from 'three';
-import { SCENE_UTIL, mulberry32 } from './utils';
+import { SCENE_UTIL, mulberry32, resolveSeed } from './utils';
+import config from './data/config.json';
 
-const CLOUD_COUNT = 150;
-const CLOUD_SPREAD = 2000; // wrap boundary — matches camera far plane so clouds are clipped before they wrap
-const CLOUD_Y = 250;
-const CELL_SIZE = 30;   // XZ footprint of each cloud voxel
-const CELL_HEIGHT = 8;  // flat, like Minecraft
-const DRIFT_SPEED = 2;  // units/sec — all clouds move at the same speed for a Minecraft feel
-const WIND_X = Math.cos(0.2);
-const WIND_Z = Math.sin(0.2);
+const CLOUD_SEED = resolveSeed(config.clouds.seed);
+const CLOUD_COUNT = config.clouds.count;
+const CLOUD_SPREAD = config.clouds.spread;
+const CLOUD_Y = config.clouds.height;
+const CELL_SIZE = config.clouds.cellSize;
+const CELL_HEIGHT = config.clouds.cellHeight;
+const DRIFT_SPEED = config.clouds.driftSpeed;
+const WIND_X = Math.cos(config.clouds.windAngle);
+const WIND_Z = Math.sin(config.clouds.windAngle);
 
 type CloudEntry = { group: THREE.Group };
 const cloudEntries: CloudEntry[] = [];
@@ -33,7 +35,7 @@ const makeShape = (width: number, depth: number, rng: () => number): Array<[numb
 };
 
 export const buildClouds = (): void => {
-  const rng = mulberry32(999);
+  const rng = mulberry32(CLOUD_SEED);
   const geo = new THREE.BoxGeometry(CELL_SIZE, CELL_HEIGHT, CELL_SIZE);
   const mat = new THREE.MeshPhongMaterial({ color: 0xffffff });
 
@@ -66,15 +68,15 @@ export const buildClouds = (): void => {
   }
 };
 
-export const updateClouds = (delta: number, playerPos: THREE.Vector3): void => {
+export const updateClouds = (delta: number): void => {
   const span = CLOUD_SPREAD * 2;
   for (const { group } of cloudEntries) {
     group.position.x += WIND_X * DRIFT_SPEED * delta;
     group.position.z += WIND_Z * DRIFT_SPEED * delta;
 
-    if (group.position.x > playerPos.x + CLOUD_SPREAD) group.position.x -= span;
-    if (group.position.x < playerPos.x - CLOUD_SPREAD) group.position.x += span;
-    if (group.position.z > playerPos.z + CLOUD_SPREAD) group.position.z -= span;
-    if (group.position.z < playerPos.z - CLOUD_SPREAD) group.position.z += span;
+    if (group.position.x > CLOUD_SPREAD) group.position.x -= span;
+    if (group.position.x < -CLOUD_SPREAD) group.position.x += span;
+    if (group.position.z > CLOUD_SPREAD) group.position.z -= span;
+    if (group.position.z < -CLOUD_SPREAD) group.position.z += span;
   }
 };

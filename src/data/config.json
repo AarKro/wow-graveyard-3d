@@ -1,0 +1,102 @@
+{
+  "world": {
+    "tileSize": 2,
+    "gridSize": 400,
+    "chunkSize": 16,
+    "seed": 0
+  },
+  "terrain": {
+    "seed": 42,
+    "heightScale": 10,
+    "noiseScale": 0.015,
+    "tileDepth": 10,
+    "colorLow": "#6b8050",
+    "colorHigh": "#9eb87a"
+  },
+  "sky": {
+    "color": "#dce8f0",
+    "fogDensity": 0.001
+  },
+  "ambient": {
+    "skyColor": "#eeeeff",
+    "groundColor": "#777788",
+    "intensity": 2.5
+  },
+  "sun": {
+    "direction": [-2.0, 1.0, 0.3],
+    "distance": 600,
+    "shadowCameraNear": -200,
+    "shadowCameraFar": 1500,
+    "nearLight": {
+      "color": "#ffb347",
+      "intensity": 2.0,
+      "shadowMapSize": 4096,
+      "shadowCameraSize": 90,
+      "shadowBias": -0.0005
+    },
+    "farLight": {
+      "color": "#ffb347",
+      "intensity": 0.5,
+      "shadowMapSize": 2048,
+      "shadowCameraSize": 700,
+      "shadowBias": -0.001
+    },
+    "core": {
+      "size": 55
+    },
+    "halo": {
+      "size": 130,
+      "color": "#ffe060",
+      "opacity": 0.22
+    }
+  },
+  "player": {
+    "eyeHeight": 4,
+    "moveSpeed": 300,
+    "sprintMultiplier": 1.5,
+    "gravity": 150,
+    "jumpImpulse": 50,
+    "friction": 20,
+    "mouseSensitivity": 0.002
+  },
+  "clouds": {
+    "seed": 999,
+    "count": 150,
+    "spread": 2000,
+    "height": 250,
+    "cellSize": 30,
+    "cellHeight": 8,
+    "driftSpeed": 2,
+    "windAngle": 0.2
+  },
+  "forest": {
+    "trees": {
+      "seed": 7,
+      "innerRadius": 100,
+      "outerRadius": 250,
+      "count": 1500,
+      "spacingInner": 10,
+      "spacingOuter": 4,
+      "colliderRadius": 1.5,
+      "scaleMin": 0.8,
+      "scaleMax": 1.2
+    },
+    "bushes": {
+      "seed": 13,
+      "innerRadius": 90,
+      "outerRadius": 200,
+      "count": 700,
+      "spacingInner": 6,
+      "spacingOuter": 3,
+      "scaleMin": 0.8,
+      "scaleMax": 1.2
+    }
+  },
+  "graves": {
+    "seed": 42,
+    "spread": 40,
+    "minSpacing": 6,
+    "colliderRadius": 1.0,
+    "labelTriggerRadius": 6
+  }
+}

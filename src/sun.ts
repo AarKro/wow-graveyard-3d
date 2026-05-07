@@ -1,50 +1,56 @@
 import * as THREE from 'three';
 import { SCENE_UTIL } from './utils';
+import config from './data/config.json';
+
+const SUN_DISTANCE = config.sun.distance;
+const SHADOW_CAM_NEAR = config.sun.shadowCameraNear;
+const SHADOW_CAM_FAR = config.sun.shadowCameraFar;
+const nearCfg = config.sun.nearLight;
+const farCfg = config.sun.farLight;
+const coreCfg = config.sun.core;
+const haloCfg = config.sun.halo;
 
 // Direction FROM the world TOWARD the sun (normalized)
-export const SUN_DIRECTION = new THREE.Vector3(-2.0, 1.0, 0.3).normalize();
+export const SUN_DIRECTION = new THREE.Vector3(
+  config.sun.direction[0], config.sun.direction[1], config.sun.direction[2],
+).normalize();
 
-const SUN_DISTANCE = 600; // units from player
-
-// ── Near light — crisp shadows for close objects (gravestones, placed items) ─
-export const sunLight = new THREE.DirectionalLight(0xffb347, 2.0);
+export const sunLight = new THREE.DirectionalLight(nearCfg.color, nearCfg.intensity);
 sunLight.castShadow = true;
-sunLight.shadow.mapSize.width = 4096;
-sunLight.shadow.mapSize.height = 4096;
-sunLight.shadow.bias = -0.0005;
+sunLight.shadow.mapSize.width = nearCfg.shadowMapSize;
+sunLight.shadow.mapSize.height = nearCfg.shadowMapSize;
+sunLight.shadow.bias = nearCfg.shadowBias;
 const nearShadowCam = sunLight.shadow.camera;
-nearShadowCam.left = nearShadowCam.bottom = -90;
-nearShadowCam.right = nearShadowCam.top = 90;
-nearShadowCam.near = -200;
-nearShadowCam.far = 1500;
+nearShadowCam.left = nearShadowCam.bottom = -nearCfg.shadowCameraSize;
+nearShadowCam.right = nearShadowCam.top = nearCfg.shadowCameraSize;
+nearShadowCam.near = SHADOW_CAM_NEAR;
+nearShadowCam.far = SHADOW_CAM_FAR;
 nearShadowCam.updateProjectionMatrix();
 SCENE_UTIL.scene.add(sunLight);
 SCENE_UTIL.scene.add(sunLight.target);
 
-// ── Far light — cloud shadows on terrain ─────────────────────────────────────
-const farSunLight = new THREE.DirectionalLight(0xffb347, 0.5);
+const farSunLight = new THREE.DirectionalLight(farCfg.color, farCfg.intensity);
 farSunLight.castShadow = true;
-farSunLight.shadow.mapSize.width = 2048;
-farSunLight.shadow.mapSize.height = 2048;
-farSunLight.shadow.bias = -0.001;
+farSunLight.shadow.mapSize.width = farCfg.shadowMapSize;
+farSunLight.shadow.mapSize.height = farCfg.shadowMapSize;
+farSunLight.shadow.bias = farCfg.shadowBias;
 const farShadowCam = farSunLight.shadow.camera;
-farShadowCam.left = farShadowCam.bottom = -700;
-farShadowCam.right = farShadowCam.top = 700;
-farShadowCam.near = -200;
-farShadowCam.far = 1500;
+farShadowCam.left = farShadowCam.bottom = -farCfg.shadowCameraSize;
+farShadowCam.right = farShadowCam.top = farCfg.shadowCameraSize;
+farShadowCam.near = SHADOW_CAM_NEAR;
+farShadowCam.far = SHADOW_CAM_FAR;
 farShadowCam.updateProjectionMatrix();
 SCENE_UTIL.scene.add(farSunLight);
 SCENE_UTIL.scene.add(farSunLight.target);
 
-// ── Sun visual ───────────────────────────────────────────────────────────────
 const coreMesh = new THREE.Mesh(
-  new THREE.PlaneGeometry(55, 55),
+  new THREE.PlaneGeometry(coreCfg.size, coreCfg.size),
   new THREE.MeshBasicMaterial({ color: 0xffffff, fog: false, depthWrite: false }),
 );
 
 const haloMesh = new THREE.Mesh(
-  new THREE.PlaneGeometry(130, 130),
-  new THREE.MeshBasicMaterial({ color: 0xffe060, fog: false, transparent: true, opacity: 0.22, depthWrite: false }),
+  new THREE.PlaneGeometry(haloCfg.size, haloCfg.size),
+  new THREE.MeshBasicMaterial({ color: haloCfg.color, fog: false, transparent: true, opacity: haloCfg.opacity, depthWrite: false }),
 );
 haloMesh.position.z = -0.5;
 
@@ -53,7 +59,6 @@ sunGroup.add(haloMesh);
 sunGroup.add(coreMesh);
 SCENE_UTIL.scene.add(sunGroup);
 
-// ── Per-frame update ─────────────────────────────────────────────────────────
 export const sunWorldPos = new THREE.Vector3();
 
 export const updateSun = (playerPos: THREE.Vector3): void => {

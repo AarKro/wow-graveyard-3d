@@ -1,26 +1,31 @@
 import { GLTF } from 'three/addons/loaders/GLTFLoader.js';
 import * as THREE from 'three';
-import { SCENE_UTIL, mulberry32 } from './utils';
+import { SCENE_UTIL, mulberry32, resolveSeed } from './utils';
 import { getHeightAt, WORLD_CHUNK_SIZE } from './floor';
 import { colliders } from './colliders';
+import config from './data/config.json';
 
-const TREE_INNER_RADIUS = 100;
-const TREE_OUTER_RADIUS = 250;
-const TREE_COUNT = 1500;
-const TREE_SPACING_INNER = 10;
-const TREE_SPACING_OUTER = 4;
-const TREE_COLLIDER_RADIUS = 1.5;
+const TREE_INNER_RADIUS = config.forest.trees.innerRadius;
+const TREE_OUTER_RADIUS = config.forest.trees.outerRadius;
+const TREE_COUNT = config.forest.trees.count;
+const TREE_SPACING_INNER = config.forest.trees.spacingInner;
+const TREE_SPACING_OUTER = config.forest.trees.spacingOuter;
+const TREE_COLLIDER_RADIUS = config.forest.trees.colliderRadius;
+const TREE_SCALE_MIN = config.forest.trees.scaleMin;
+const TREE_SCALE_MAX = config.forest.trees.scaleMax;
 
-const BUSH_INNER_RADIUS = 90;
-const BUSH_OUTER_RADIUS = 200;
-const BUSH_COUNT = 700;
-const BUSH_SPACING_INNER = 6;
-const BUSH_SPACING_OUTER = 3;
+const BUSH_INNER_RADIUS = config.forest.bushes.innerRadius;
+const BUSH_OUTER_RADIUS = config.forest.bushes.outerRadius;
+const BUSH_COUNT = config.forest.bushes.count;
+const BUSH_SPACING_INNER = config.forest.bushes.spacingInner;
+const BUSH_SPACING_OUTER = config.forest.bushes.spacingOuter;
+const BUSH_SCALE_MIN = config.forest.bushes.scaleMin;
+const BUSH_SCALE_MAX = config.forest.bushes.scaleMax;
 
 const CARDINAL_ROTATIONS = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2];
 
-const treeRng = mulberry32(7);
-const bushRng = mulberry32(13);
+const treeRng = mulberry32(resolveSeed(config.forest.trees.seed));
+const bushRng = mulberry32(resolveSeed(config.forest.bushes.seed));
 
 type Placement = { x: number; y: number; z: number; rotation: number; scale: number; variantIdx: number };
 
@@ -59,6 +64,8 @@ const collectPlacements = (
   innerSpacing: number,
   outerSpacing: number,
   colliderRadius: number,
+  scaleMin: number,
+  scaleMax: number,
 ): Placement[] => {
   const placements: Placement[] = [];
   for (let i = 0; i < count; i++) {
@@ -66,7 +73,7 @@ const collectPlacements = (
     if (!pos) continue;
     placed.push(pos);
     const { x, z } = pos;
-    const scale = 0.8 + rng() * 0.4;
+    const scale = scaleMin + rng() * (scaleMax - scaleMin);
     const variantIdx = Math.floor(rng() * variantCount);
     const rotation = CARDINAL_ROTATIONS[Math.floor(rng() * 4)];
     placements.push({ x, y: getHeightAt(x, z), z, rotation, scale, variantIdx });
@@ -143,6 +150,7 @@ export const buildForest = async (): Promise<void> => {
     treeGltfs.length, treeRng, treePlaced,
     TREE_COUNT, TREE_INNER_RADIUS, TREE_OUTER_RADIUS,
     TREE_SPACING_INNER, TREE_SPACING_OUTER, TREE_COLLIDER_RADIUS,
+    TREE_SCALE_MIN, TREE_SCALE_MAX,
   );
   spawnInstancedMeshes(treeGltfs, treePlacements);
 
@@ -151,6 +159,7 @@ export const buildForest = async (): Promise<void> => {
     bushGltfs.length, bushRng, bushPlaced,
     BUSH_COUNT, BUSH_INNER_RADIUS, BUSH_OUTER_RADIUS,
     BUSH_SPACING_INNER, BUSH_SPACING_OUTER, 0,
+    BUSH_SCALE_MIN, BUSH_SCALE_MAX,
   );
   spawnInstancedMeshes(bushGltfs, bushPlacements);
 };

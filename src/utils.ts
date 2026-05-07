@@ -1,5 +1,10 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import config from './data/config.json';
+
+// Returns world.seed if set (non-zero), otherwise the module-specific seed.
+export const resolveSeed = (individual: number): number =>
+  individual !== 0 ? individual : config.world.seed;
 
 export const mulberry32 = (s: number) => () => {
   s |= 0; s = s + 0x6D2B79F5 | 0;

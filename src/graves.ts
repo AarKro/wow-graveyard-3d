@@ -1,9 +1,10 @@
 import * as THREE from 'three';
-import { SCENE_UTIL, mulberry32 } from './utils';
+import { SCENE_UTIL, mulberry32, resolveSeed } from './utils';
 import { getHeightAt } from './floor';
 import { colliders } from './colliders';
 import { addGraveLabel } from './labels';
 import tombstones from './data/tombstones.json';
+import config from './data/config.json';
 
 export type GraveData = {
   name: string;
@@ -16,12 +17,12 @@ export type GraveData = {
   tombstoneNumber: number;
 };
 
-const GRAVE_RADIUS = 1.0;
-const LABEL_TRIGGER = 6;
-const SPREAD = 40;
-const MIN_SPACING = 6;
+const SPREAD = config.graves.spread;
+const MIN_SPACING = config.graves.minSpacing;
+const GRAVE_RADIUS = config.graves.colliderRadius;
+const LABEL_TRIGGER = config.graves.labelTriggerRadius;
 
-const rng = mulberry32(42);
+const rng = mulberry32(resolveSeed(config.graves.seed));
 
 const pickPosition = (placed: Array<{ x: number; z: number }>): { x: number; z: number } => {
   for (let i = 0; i < 200; i++) {
