@@ -3,7 +3,7 @@ import { createNoise2D } from 'simplex-noise';
 import { SCENE_UTIL, mulberry32 } from './utils';
 
 export const TILE_SIZE  = 2;
-export const GRID_SIZE  = 2000;
+export const GRID_SIZE  = 400;
 export const CHUNK_SIZE = 16; // tiles per chunk side; 2000/16 = 125 chunks per axis
 export const HALF_WORLD = (GRID_SIZE * TILE_SIZE) / 2;
 

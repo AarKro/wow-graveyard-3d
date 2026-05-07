@@ -23,6 +23,7 @@ let moveForward  = false;
 let moveBackward = false;
 let moveLeft     = false;
 let moveRight    = false;
+let sprinting    = false;
 let canJump      = false;
 let prevTime     = performance.now();
 
@@ -46,6 +47,7 @@ document.addEventListener('keydown', (e: KeyboardEvent) => {
     case 'ArrowDown':  case 'KeyS': moveBackward = true;  break;
     case 'ArrowLeft':  case 'KeyA': moveLeft     = true;  break;
     case 'ArrowRight': case 'KeyD': moveRight    = true;  break;
+    case 'ShiftLeft': case 'ShiftRight': sprinting = true;  break;
     case 'Space':
       if (canJump) { velocity.y += JUMP_IMPULSE; canJump = false; }
       break;
@@ -57,6 +59,7 @@ document.addEventListener('keyup', (e: KeyboardEvent) => {
     case 'ArrowDown':  case 'KeyS': moveBackward = false; break;
     case 'ArrowLeft':  case 'KeyA': moveLeft     = false; break;
     case 'ArrowRight': case 'KeyD': moveRight    = false; break;
+    case 'ShiftLeft': case 'ShiftRight': sprinting = false; break;
   }
 });
 
@@ -79,8 +82,9 @@ export const updatePlayer = () => {
     if (moveLeft)     { dirX -= cosYaw; dirZ -= sinYaw; }
     const dirLength = Math.sqrt(dirX * dirX + dirZ * dirZ);
     if (dirLength > 0) {
-      velocity.x += (dirX / dirLength) * MOVE_SPEED * delta;
-      velocity.z += (dirZ / dirLength) * MOVE_SPEED * delta;
+      const speed = MOVE_SPEED * (sprinting ? 1.5 : 1);
+      velocity.x += (dirX / dirLength) * speed * delta;
+      velocity.z += (dirZ / dirLength) * speed * delta;
     }
   }
 
