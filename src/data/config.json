@@ -16,7 +16,8 @@
     "colorHigh": "#9eb87a"
   },
   "sky": {
-    "backgroundColor": "#dce8f0"
+    "zenithColor": "#295298",
+    "horizonColor": "#e07a3a"
   },
   "hemisphereLight": {
     "skyColor": "#eeeeff",
@@ -39,6 +40,15 @@
     },
     "shadowCameraNear": -200,
     "shadowCameraFar": 1500,
+    "fillLight": {
+      "color": "#ffb347",
+      "intensity": 0.4,
+      "shadowMapSize": 1024,
+      "shadowCameraSize": 120,
+      "shadowCameraNear": 620,
+      "shadowCameraFar": 900,
+      "shadowBias": -0.001
+    },
     "light": {
       "color": "#ffb347",
       "intensity": 2.0,
@@ -50,7 +60,7 @@
       "density": 0.008,
       "maxDensity": 0.6,
       "distanceAttenuation": 2,
-      "color": "#ffcc88",
+      "color": "#ffb655",
       "raymarchSteps": 100,
       "blur": true,
       "gammaCorrection": true

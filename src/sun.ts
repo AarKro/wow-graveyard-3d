@@ -9,6 +9,7 @@ const SUN_DIRECTION = new THREE.Vector3(
 const SHADOW_CAM_NEAR = config.sun.shadowCameraNear;
 const SHADOW_CAM_FAR = config.sun.shadowCameraFar;
 const lightCfg = config.sun.light;
+const fillCfg = config.sun.fillLight;
 
 export const farSunLight = new THREE.DirectionalLight(lightCfg.color, lightCfg.intensity);
 farSunLight.castShadow = true;
@@ -23,6 +24,21 @@ shadowCam.far = SHADOW_CAM_FAR;
 shadowCam.updateProjectionMatrix();
 scene.add(farSunLight);
 scene.add(farSunLight.target);
+
+// second light to ensure all objects throw faint shadows even when the sun is blocked
+const fillLight = new THREE.DirectionalLight(fillCfg.color, fillCfg.intensity);
+fillLight.castShadow = true;
+fillLight.shadow.mapSize.width = fillCfg.shadowMapSize;
+fillLight.shadow.mapSize.height = fillCfg.shadowMapSize;
+fillLight.shadow.bias = fillCfg.shadowBias;
+const fillShadowCam = fillLight.shadow.camera;
+fillShadowCam.left = fillShadowCam.bottom = -fillCfg.shadowCameraSize;
+fillShadowCam.right = fillShadowCam.top = fillCfg.shadowCameraSize;
+fillShadowCam.near = fillCfg.shadowCameraNear;
+fillShadowCam.far = fillCfg.shadowCameraFar;
+fillShadowCam.updateProjectionMatrix();
+scene.add(fillLight);
+scene.add(fillLight.target);
 
 const spriteCfg = config.sun.sprite;
 
@@ -89,4 +105,8 @@ export const updateSun = (playerPos: THREE.Vector3): void => {
   farSunLight.position.copy(sunWorldPos);
   farSunLight.target.position.copy(playerPos);
   farSunLight.target.updateMatrixWorld();
+
+  fillLight.position.copy(sunWorldPos);
+  fillLight.target.position.copy(playerPos);
+  fillLight.target.updateMatrixWorld();
 };
