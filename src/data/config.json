@@ -16,40 +16,36 @@
     "colorHigh": "#9eb87a"
   },
   "sky": {
-    "color": "#dce8f0",
-    "fogDensity": 0.001
+    "backgroundColor": "#dce8f0"
   },
   "hemisphereLight": {
     "skyColor": "#eeeeff",
-    "groundColor": "#777788",
+    "groundColor": "#6a6470",
     "intensity": 2.5
   },
   "sun": {
+    "distance": 700,
     "direction": [-2.0, 1.0, 0.3],
-    "distance": 600,
+    "spriteSize": 120,
     "shadowCameraNear": -200,
     "shadowCameraFar": 1500,
-    "nearLight": {
+    "light": {
       "color": "#ffb347",
       "intensity": 2.0,
       "shadowMapSize": 4096,
-      "shadowCameraSize": 90,
+      "shadowCameraSize": 120,
       "shadowBias": -0.0005
     },
-    "farLight": {
-      "color": "#ffb347",
-      "intensity": 0.5,
-      "shadowMapSize": 2048,
-      "shadowCameraSize": 700,
-      "shadowBias": -0.001
-    },
-    "core": {
-      "size": 55
-    },
-    "halo": {
-      "size": 130,
-      "color": "#ffe060",
-      "opacity": 0.22
+    "godrays": {
+      "density": 0.008,
+      "maxDensity": 0.6,
+      "edgeStrength": 3,
+      "edgeRadius": 2,
+      "distanceAttenuation": 2,
+      "color": "#ffcc88",
+      "raymarchSteps": 100,
+      "blur": true,
+      "gammaCorrection": true
     }
   },
   "player": {
@@ -63,13 +59,13 @@
   },
   "clouds": {
     "seed": 999,
-    "count": 150,
+    "count": 250,
     "spread": 2000,
     "height": 250,
     "cellSize": 30,
     "cellHeight": 8,
     "driftSpeed": 2,
-    "windAngle": 0.2
+    "windAngle": 1.5
   },
   "forest": {
     "trees": {

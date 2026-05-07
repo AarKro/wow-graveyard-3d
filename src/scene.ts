@@ -5,8 +5,7 @@ import config from './data/config.json';
 export const scene = new THREE.Scene();
 export const loader = new GLTFLoader();
 
-scene.background = new THREE.Color(config.sky.color);
-scene.fog = new THREE.FogExp2(config.sky.color, config.sky.fogDensity);
+scene.background = new THREE.Color(config.sky.backgroundColor);
 
 const ambientLight = new THREE.HemisphereLight(
   config.hemisphereLight.skyColor,

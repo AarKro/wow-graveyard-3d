@@ -7,18 +7,23 @@ import { buildTerrain } from './terrain';
 import { buildClouds, updateClouds } from './clouds';
 import { buildForest } from './forest';
 import { updateSun } from './sun';
+import { buildComposer } from './godrays';
+import { buildGraves } from './graves';
 
 const canvas = document.querySelector('canvas.webgl');
 if (!canvas) throw new Error('Canvas element not found');
 
 const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFShadowMap;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.setSize(sizes.width, sizes.height);
 
 buildTerrain();
 buildClouds();
 buildForest();
+buildGraves();
+
+const composer = buildComposer(renderer, camera);
 
 let prevTime = performance.now();
 
@@ -26,10 +31,12 @@ renderer.setAnimationLoop(() => {
   const now = performance.now();
   const delta = Math.min((now - prevTime) / 1000, 0.1);
   prevTime = now;
+
   updatePlayer(delta);
   updateClouds(delta);
   updateSun(camera.position);
   updateLabels(playerPos);
-  renderer.render(scene, camera);
+  
+  composer.render();
   labelRenderer.render(scene, camera);
 });
