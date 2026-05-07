@@ -2,7 +2,7 @@ import { GLTF } from 'three/addons/loaders/GLTFLoader.js';
 import * as THREE from 'three';
 import { mulberry32, resolveSeed, getModelUrl } from './utils';
 import { scene, loader } from './scene';
-import { getHeightAt, WORLD_CHUNK_SIZE } from './terrain';
+import { getHeightAt } from './terrain';
 import { colliders } from './colliders';
 import config from './data/config.json';
 
@@ -23,6 +23,7 @@ const BUSH_SPACING_OUTER = config.forest.bushes.spacingOuter;
 const BUSH_SCALE_MIN = config.forest.bushes.scaleMin;
 const BUSH_SCALE_MAX = config.forest.bushes.scaleMax;
 
+const WORLD_CHUNK_SIZE = config.world.chunkSize * config.terrain.tileSize;
 const CARDINAL_ROTATIONS = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2];
 
 const treeRng = mulberry32(resolveSeed(config.forest.trees.seed));

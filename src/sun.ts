@@ -11,11 +11,11 @@ const coreCfg = config.sun.core;
 const haloCfg = config.sun.halo;
 
 // Direction FROM the world TOWARD the sun (normalized)
-export const SUN_DIRECTION = new THREE.Vector3(
+const SUN_DIRECTION = new THREE.Vector3(
   config.sun.direction[0], config.sun.direction[1], config.sun.direction[2],
 ).normalize();
 
-export const sunLight = new THREE.DirectionalLight(nearCfg.color, nearCfg.intensity);
+const sunLight = new THREE.DirectionalLight(nearCfg.color, nearCfg.intensity);
 sunLight.castShadow = true;
 sunLight.shadow.mapSize.width = nearCfg.shadowMapSize;
 sunLight.shadow.mapSize.height = nearCfg.shadowMapSize;
@@ -59,7 +59,7 @@ sunGroup.add(haloMesh);
 sunGroup.add(coreMesh);
 scene.add(sunGroup);
 
-export const sunWorldPos = new THREE.Vector3();
+const sunWorldPos = new THREE.Vector3();
 
 export const updateSun = (playerPos: THREE.Vector3): void => {
   sunWorldPos.copy(playerPos).addScaledVector(SUN_DIRECTION, SUN_DISTANCE);

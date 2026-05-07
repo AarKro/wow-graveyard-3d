@@ -33,7 +33,7 @@ const pickPosition = (placed: Array<{ x: number; z: number }>): { x: number; z: 
   return { x: (rng() * 2 - 1) * SPREAD, z: (rng() * 2 - 1) * SPREAD };
 };
 
-export const buildGraves = async (): Promise<void> => {
+const buildGraves = async (): Promise<void> => {
   const gltf = await loader.loadAsync(getModelUrl(config.graves.model));
 
   gltf.scene.traverse((node) => {

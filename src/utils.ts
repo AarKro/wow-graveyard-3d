@@ -9,8 +9,10 @@ export const getModelUrl = (filename: string): string => {
 };
 
 // Returns world.seed if set (non-zero), otherwise the module-specific seed.
-export const resolveSeed = (individual: number): number =>
-  individual !== 0 ? individual : config.world.seed;
+export const resolveSeed = (individual: number): number => {
+  if (config.world.forceWorldSeed) return config.world.seed;
+  return individual !== 0 ? individual : config.world.seed;
+};
 
 // Algorithm for generating deterministic random numbers from a seed.
 // https://github.com/cprosche/mulberry32
