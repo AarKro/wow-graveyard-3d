@@ -26,7 +26,17 @@
   "sun": {
     "distance": 700,
     "direction": [-2.0, 1.0, 0.3],
-    "spriteSize": 120,
+    "sprite": {
+      "size": 120,
+      "borderRatio": 0.13,
+      "discBorderColor": "#ff8d13",
+      "discCoreColor": "#ffa513",
+      "discOpacity": 0.25,
+      "glowBorderColor": "#ffa01e",
+      "glowBorderOpacity": 0.5,
+      "glowCoreColor": "#fff0b4",
+      "glowCoreOpacity": 0.6
+    },
     "shadowCameraNear": -200,
     "shadowCameraFar": 1500,
     "light": {

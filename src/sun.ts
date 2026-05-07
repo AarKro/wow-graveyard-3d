@@ -24,19 +24,21 @@ shadowCam.updateProjectionMatrix();
 scene.add(farSunLight);
 scene.add(farSunLight.target);
 
+const spriteCfg = config.sun.sprite;
+
 const buildSunTexture = (): THREE.CanvasTexture => {
   const size = 256;
   const canvas = document.createElement('canvas');
   canvas.width = size;
   canvas.height = size;
   const ctx = canvas.getContext('2d')!;
-  const border = size * 0.13;
-  ctx.fillStyle = '#ff8d13';
+  const border = size * spriteCfg.borderRatio;
+  ctx.fillStyle = spriteCfg.discBorderColor;
   ctx.fillRect(0, 0, size, size);
-  ctx.fillStyle = '#ffa513';
+  ctx.fillStyle = spriteCfg.discCoreColor;
   ctx.fillRect(border, border, size - border * 2, size - border * 2);
   return new THREE.CanvasTexture(canvas);
-}
+};
 
 const buildGlowTexture = (): THREE.CanvasTexture => {
   const size = 256;
@@ -44,11 +46,14 @@ const buildGlowTexture = (): THREE.CanvasTexture => {
   canvas.width = size;
   canvas.height = size;
   const ctx = canvas.getContext('2d')!;
-  const border = size * 0.13;
-  ctx.fillStyle = 'rgba(255, 160, 30, 0.5)';
+  const border = size * spriteCfg.borderRatio;
+  ctx.globalAlpha = spriteCfg.glowBorderOpacity;
+  ctx.fillStyle = spriteCfg.glowBorderColor;
   ctx.fillRect(0, 0, size, size);
-  ctx.fillStyle = 'rgba(255, 240, 180, 0.6)';
+  ctx.globalAlpha = spriteCfg.glowCoreOpacity;
+  ctx.fillStyle = spriteCfg.glowCoreColor;
   ctx.fillRect(border, border, size - border * 2, size - border * 2);
+  ctx.globalAlpha = 1;
   return new THREE.CanvasTexture(canvas);
 };
 
@@ -57,9 +62,9 @@ const sunSprite = new THREE.Sprite(new THREE.SpriteMaterial({
   fog: false,
   depthWrite: false,
   transparent: true,
-  opacity: 0.25,
+  opacity: spriteCfg.discOpacity,
 }));
-sunSprite.scale.setScalar(config.sun.spriteSize);
+sunSprite.scale.setScalar(spriteCfg.size);
 sunSprite.renderOrder = 0;
 scene.add(sunSprite);
 
@@ -69,7 +74,7 @@ const sunGlow = new THREE.Sprite(new THREE.SpriteMaterial({
   depthWrite: false,
   blending: THREE.AdditiveBlending,
 }));
-sunGlow.scale.setScalar(config.sun.spriteSize);
+sunGlow.scale.setScalar(spriteCfg.size);
 sunGlow.renderOrder = 1;
 scene.add(sunGlow);
 
