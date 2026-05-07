@@ -55,8 +55,8 @@ export const addGraveLabel = (
 
 export const updateLabels = (playerPos: THREE.Vector3): void => {
   for (const entry of entries) {
-    const deltaX  = playerPos.x - entry.worldPos.x;
-    const deltaZ  = playerPos.z - entry.worldPos.z;
+    const deltaX = playerPos.x - entry.worldPos.x;
+    const deltaZ = playerPos.z - entry.worldPos.z;
     const opacity = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ) < entry.triggerRadius ? '1' : '0';
     for (const el of entry.elements) el.style.opacity = opacity;
   }

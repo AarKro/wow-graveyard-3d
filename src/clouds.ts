@@ -1,22 +1,22 @@
 import * as THREE from 'three';
 import { SCENE_UTIL, mulberry32 } from './utils';
 
-const CLOUD_COUNT  = 150;
+const CLOUD_COUNT = 150;
 const CLOUD_SPREAD = 2000; // wrap boundary — matches camera far plane so clouds are clipped before they wrap
-const CLOUD_Y      = 250;
-const CELL_SIZE    = 30;   // XZ footprint of each cloud voxel
-const CELL_HEIGHT  = 8;    // flat, like Minecraft
-const DRIFT_SPEED  = 2;    // units/sec — all clouds move at the same speed for a Minecraft feel
-const WIND_X       = Math.cos(0.2);
-const WIND_Z       = Math.sin(0.2);
+const CLOUD_Y = 250;
+const CELL_SIZE = 30;   // XZ footprint of each cloud voxel
+const CELL_HEIGHT = 8;  // flat, like Minecraft
+const DRIFT_SPEED = 2;  // units/sec — all clouds move at the same speed for a Minecraft feel
+const WIND_X = Math.cos(0.2);
+const WIND_Z = Math.sin(0.2);
 
 type CloudEntry = { group: THREE.Group };
 const cloudEntries: CloudEntry[] = [];
 
 const makeShape = (width: number, depth: number, rng: () => number): Array<[number, number]> => {
-  const cells      = new Array<[number, number]>();
-  const halfWidth  = (width - 1) * 0.5;
-  const halfDepth  = (depth - 1) * 0.5;
+  const cells = new Array<[number, number]>();
+  const halfWidth = (width - 1) * 0.5;
+  const halfDepth = (depth - 1) * 0.5;
 
   for (let z = 0; z < depth; z++) {
     for (let x = 0; x < width; x++) {
@@ -41,8 +41,8 @@ export const buildClouds = (): void => {
     const cloudX = (rng() * 2 - 1) * CLOUD_SPREAD;
     const cloudZ = (rng() * 2 - 1) * CLOUD_SPREAD;
     const cloudY = CLOUD_Y + (rng() - 0.5) * 20;
-    const width  = 5 + Math.floor(rng() * 10); // 5–14 cells wide
-    const depth  = 4 + Math.floor(rng() * 7);  // 4–10 cells deep
+    const width = 5 + Math.floor(rng() * 10); // 5–14 cells wide
+    const depth = 4 + Math.floor(rng() * 7);  // 4–10 cells deep
 
     const cells = makeShape(width, depth, rng);
     if (cells.length === 0) continue;

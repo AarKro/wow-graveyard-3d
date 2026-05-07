@@ -9,14 +9,14 @@ const SUN_DISTANCE = 600; // units from player
 // ── Near light — crisp shadows for close objects (gravestones, placed items) ─
 export const sunLight = new THREE.DirectionalLight(0xffb347, 2.0);
 sunLight.castShadow = true;
-sunLight.shadow.mapSize.width  = 4096;
+sunLight.shadow.mapSize.width = 4096;
 sunLight.shadow.mapSize.height = 4096;
 sunLight.shadow.bias = -0.0005;
 const nearShadowCam = sunLight.shadow.camera;
 nearShadowCam.left = nearShadowCam.bottom = -90;
-nearShadowCam.right = nearShadowCam.top   =  90;
-nearShadowCam.near  = -200;
-nearShadowCam.far   =  1500;
+nearShadowCam.right = nearShadowCam.top = 90;
+nearShadowCam.near = -200;
+nearShadowCam.far = 1500;
 nearShadowCam.updateProjectionMatrix();
 SCENE_UTIL.scene.add(sunLight);
 SCENE_UTIL.scene.add(sunLight.target);
@@ -24,14 +24,14 @@ SCENE_UTIL.scene.add(sunLight.target);
 // ── Far light — cloud shadows on terrain ─────────────────────────────────────
 const farSunLight = new THREE.DirectionalLight(0xffb347, 0.5);
 farSunLight.castShadow = true;
-farSunLight.shadow.mapSize.width  = 2048;
+farSunLight.shadow.mapSize.width = 2048;
 farSunLight.shadow.mapSize.height = 2048;
 farSunLight.shadow.bias = -0.001;
 const farShadowCam = farSunLight.shadow.camera;
 farShadowCam.left = farShadowCam.bottom = -700;
-farShadowCam.right = farShadowCam.top   =  700;
-farShadowCam.near  = -200;
-farShadowCam.far   =  1500;
+farShadowCam.right = farShadowCam.top = 700;
+farShadowCam.near = -200;
+farShadowCam.far = 1500;
 farShadowCam.updateProjectionMatrix();
 SCENE_UTIL.scene.add(farSunLight);
 SCENE_UTIL.scene.add(farSunLight.target);
