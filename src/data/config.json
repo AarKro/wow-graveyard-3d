@@ -76,8 +76,8 @@
     "mouseSensitivity": 0.002
   },
   "clouds": {
-    "seed": 999,
-    "count": 250,
+    "seed": 141,
+    "count": 200,
     "spread": 2000,
     "height": 250,
     "cellSize": 30,
