@@ -17,44 +17,62 @@ export type GraveData = {
   tombstoneNumber: number;
 };
 
-const SPREAD = config.graves.spread;
-const MIN_SPACING = config.graves.minSpacing;
-const GRAVE_RADIUS = config.graves.colliderRadius;
-const LABEL_TRIGGER = config.graves.labelTriggerRadius;
+const cfg = config.graves;
+const rng = mulberry32(resolveSeed(cfg.seed));
 
-const rng = mulberry32(resolveSeed(config.graves.seed));
-
-const pickPosition = (placed: Array<{ x: number; z: number }>): { x: number; z: number } => {
-  for (let i = 0; i < 200; i++) {
-    const x = (rng() * 2 - 1) * SPREAD;
-    const z = (rng() * 2 - 1) * SPREAD;
-    if (placed.every(existing => Math.hypot(existing.x - x, existing.z - z) >= MIN_SPACING)) return { x, z };
-  }
-  return { x: (rng() * 2 - 1) * SPREAD, z: (rng() * 2 - 1) * SPREAD };
-};
-
-export const buildGraves = async (): Promise<void> => {
-  const gltf = await loader.loadAsync(getModelUrl(config.graves.model));
-
+const setShadows = (gltf: { scene: THREE.Object3D }) => {
   gltf.scene.traverse((node) => {
     if ((node as THREE.Mesh).isMesh) {
       node.castShadow = true;
+      node.receiveShadow = true;
     }
   });
+};
 
-  const placed: Array<{ x: number; z: number }> = [];
+export const buildGraves = async (): Promise<void> => {
+  const tombstones = cfg.tombstones as GraveData[];
+  const cols = cfg.cols;
+  const rows = Math.ceil(tombstones.length / cols);
 
-  for (const stone of config.graves.tombstones as GraveData[]) {
-    const { x, z } = pickPosition(placed);
-    placed.push({ x, z });
+  const [graveGltfs, flowerGltfs] = await Promise.all([
+    Promise.all(cfg.models.map(m => loader.loadAsync(getModelUrl(m)))),
+    Promise.all(cfg.flowers.models.map(m => loader.loadAsync(getModelUrl(m)))),
+  ]);
+  graveGltfs.forEach(setShadows);
+  flowerGltfs.forEach(setShadows);
+
+  for (let i = 0; i < tombstones.length; i++) {
+    const stone = tombstones[i];
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+
+    const x = (col - (cols - 1) / 2) * cfg.colSpacing + (rng() * 2 - 1) * cfg.jitterPos;
+    const z = (row - (rows - 1) / 2) * cfg.rowSpacing + (rng() * 2 - 1) * cfg.jitterPos;
     const y = getHeightAt(x, z);
 
-    const grave = gltf.scene.clone(true);
+    const graveIndex = stone.tombstoneNumber - 1;
+    const grave = graveGltfs[graveIndex].scene.clone(true);
     grave.position.set(x, y, z);
-    grave.rotation.y = rng() * Math.PI * 2;
+    grave.rotation.y = (rng() * 2 - 1) * cfg.jitterRot;
     scene.add(grave);
 
-    colliders.push({ x, z, radius: GRAVE_RADIUS });
-    addGraveLabel(stone, new THREE.Vector3(x, y, z), LABEL_TRIGGER);
+    colliders.push({ x, z, radius: cfg.colliderRadius });
+    addGraveLabel(stone, new THREE.Vector3(x, y, z), cfg.labelTriggerRadius);
+
+    for (let f = 0; f < cfg.flowers.perGrave; f++) {
+      const angle = rng() * Math.PI * 2;
+      const dist = cfg.colliderRadius + rng() * (cfg.flowers.spread - cfg.colliderRadius);
+      const fx = x + Math.cos(angle) * dist;
+      const fz = z + Math.sin(angle) * dist;
+      const fy = getHeightAt(fx, fz);
+      const scale = cfg.flowers.scaleMin + rng() * (cfg.flowers.scaleMax - cfg.flowers.scaleMin);
+      const modelIndex = Math.floor(rng() * flowerGltfs.length);
+
+      const flower = flowerGltfs[modelIndex].scene.clone(true);
+      flower.position.set(fx, fy, fz);
+      flower.rotation.y = rng() * Math.PI * 2;
+      flower.scale.setScalar(scale);
+      scene.add(flower);
+    }
   }
 };
