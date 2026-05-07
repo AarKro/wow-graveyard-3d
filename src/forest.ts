@@ -2,7 +2,7 @@ import { GLTF } from 'three/addons/loaders/GLTFLoader.js';
 import * as THREE from 'three';
 import { mulberry32, resolveSeed, getModelUrl } from './utils';
 import { scene, loader } from './scene';
-import { getHeightAt, WORLD_CHUNK_SIZE } from './floor';
+import { getHeightAt, WORLD_CHUNK_SIZE } from './terrain';
 import { colliders } from './colliders';
 import config from './data/config.json';
 

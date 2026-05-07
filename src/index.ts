@@ -3,7 +3,7 @@ import { sizes } from './utils';
 import { scene } from './scene';
 import { camera, playerPos, updatePlayer } from './player';
 import { labelRenderer, updateLabels } from './labels';
-import { buildFloor } from './floor';
+import { buildTerrain } from './terrain';
 import { buildClouds, updateClouds } from './clouds';
 import { buildForest } from './forest';
 import { updateSun } from './sun';
@@ -16,7 +16,7 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.setSize(sizes.width, sizes.height);
 
-buildFloor();
+buildTerrain();
 buildClouds();
 buildForest();
 

@@ -4,14 +4,15 @@ import { mulberry32, resolveSeed } from './utils';
 import { scene } from './scene';
 import config from './data/config.json';
 
-export const TILE_SIZE = config.world.tileSize;
+export const TILE_SIZE = config.terrain.tileSize;
 export const GRID_SIZE = config.world.gridSize;
 export const CHUNK_SIZE = config.world.chunkSize;
 export const WORLD_CHUNK_SIZE = CHUNK_SIZE * TILE_SIZE;
 export const HALF_WORLD = (GRID_SIZE * TILE_SIZE) / 2;
 
 const HEIGHT_SCALE = config.terrain.heightScale;
-const NOISE_SCALE = config.terrain.noiseScale;
+const NOISE_SCALE_MIN = config.terrain.noiseScaleMin;
+const NOISE_SCALE_MAX = config.terrain.noiseScaleMax;
 const BOX_DEPTH = config.terrain.tileDepth;
 const SEED = resolveSeed(config.terrain.seed);
 
@@ -19,8 +20,12 @@ const noise2D = createNoise2D(mulberry32(SEED));
 
 export const heightMap: number[][] = Array.from({ length: GRID_SIZE }, (_, gridZ) =>
   Array.from({ length: GRID_SIZE }, (_, gridX) => {
-    const noiseX = gridX * NOISE_SCALE;
-    const noiseZ = gridZ * NOISE_SCALE;
+    const worldX = -HALF_WORLD + gridX * TILE_SIZE + TILE_SIZE / 2;
+    const worldZ = -HALF_WORLD + gridZ * TILE_SIZE + TILE_SIZE / 2;
+    const t = Math.min(Math.sqrt(worldX * worldX + worldZ * worldZ) / HALF_WORLD, 1);
+    const noiseScale = NOISE_SCALE_MIN + (NOISE_SCALE_MAX - NOISE_SCALE_MIN) * t;
+    const noiseX = gridX * noiseScale;
+    const noiseZ = gridZ * noiseScale;
     const noiseValue =
       noise2D(noiseX,       noiseZ      ) * 0.60 +
       noise2D(noiseX * 2.1, noiseZ * 2.1) * 0.25 +
@@ -80,7 +85,7 @@ const buildChunk = (
   scene.add(mesh);
 };
 
-export const buildFloor = (): void => {
+export const buildTerrain = (): void => {
   const geometry = new THREE.BoxGeometry(TILE_SIZE, BOX_DEPTH, TILE_SIZE);
   const material = new THREE.MeshPhongMaterial();
   const chunksPerAxis = GRID_SIZE / CHUNK_SIZE;

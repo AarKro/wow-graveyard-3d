@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { mulberry32, resolveSeed, getModelUrl } from './utils';
 import { scene, loader } from './scene';
-import { getHeightAt } from './floor';
+import { getHeightAt } from './terrain';
 import { colliders } from './colliders';
 import { addGraveLabel } from './labels';
 import config from './data/config.json';

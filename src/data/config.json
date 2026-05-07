@@ -1,14 +1,15 @@
 {
   "world": {
-    "tileSize": 2,
     "gridSize": 400,
     "chunkSize": 16,
     "seed": 123
   },
   "terrain": {
     "seed": 42,
+    "tileSize": 2,
     "heightScale": 10,
-    "noiseScale": 0.015,
+    "noiseScaleMin": 0.002,
+    "noiseScaleMax": 0.05,
     "tileDepth": 10,
     "colorLow": "#6b8050",
     "colorHigh": "#9eb87a"

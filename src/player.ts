@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { sizes } from './utils';
-import { getHeightAt } from './floor';
+import { getHeightAt } from './terrain';
 import { colliders } from './colliders';
 import config from './data/config.json';
 
