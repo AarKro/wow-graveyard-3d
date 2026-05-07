@@ -49,8 +49,6 @@
     "godrays": {
       "density": 0.008,
       "maxDensity": 0.6,
-      "edgeStrength": 3,
-      "edgeRadius": 2,
       "distanceAttenuation": 2,
       "color": "#ffcc88",
       "raymarchSteps": 100,

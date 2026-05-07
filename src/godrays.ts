@@ -6,7 +6,7 @@ import { farSunLight } from './sun';
 import config from './data/config.json';
 
 
-export const buildComposer = (renderer: THREE.WebGLRenderer, camera: THREE.Camera): EffectComposer => {
+export const buildComposer = (renderer: THREE.WebGLRenderer, camera: THREE.PerspectiveCamera): EffectComposer => {
   let composer: EffectComposer;
   
   composer = new EffectComposer(renderer, { frameBufferType: THREE.HalfFloatType });
@@ -16,8 +16,6 @@ export const buildComposer = (renderer: THREE.WebGLRenderer, camera: THREE.Camer
   const godraysPass = new GodraysPass(farSunLight, camera, {
     density: cfg.density,
     maxDensity: cfg.maxDensity,
-    edgeStrength: cfg.edgeStrength,
-    edgeRadius: cfg.edgeRadius,
     distanceAttenuation: cfg.distanceAttenuation,
     color: new THREE.Color(cfg.color),
     raymarchSteps: cfg.raymarchSteps,
