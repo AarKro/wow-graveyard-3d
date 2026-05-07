@@ -3,7 +3,7 @@
     "tileSize": 2,
     "gridSize": 400,
     "chunkSize": 16,
-    "seed": 0
+    "seed": 123
   },
   "terrain": {
     "seed": 42,
@@ -17,7 +17,7 @@
     "color": "#dce8f0",
     "fogDensity": 0.001
   },
-  "ambient": {
+  "hemisphereLight": {
     "skyColor": "#eeeeff",
     "groundColor": "#777788",
     "intensity": 2.5
@@ -72,6 +72,7 @@
   "forest": {
     "trees": {
       "seed": 7,
+      "models": ["tree_1.gltf", "tree_2.gltf", "tree_3.gltf"],
       "innerRadius": 100,
       "outerRadius": 250,
       "count": 1500,
@@ -83,6 +84,7 @@
     },
     "bushes": {
       "seed": 13,
+      "models": ["bush_1.gltf", "bush_2.gltf", "bush_3.gltf"],
       "innerRadius": 90,
       "outerRadius": 200,
       "count": 700,
@@ -94,9 +96,152 @@
   },
   "graves": {
     "seed": 42,
+    "model": "grave_1.gltf",
     "spread": 40,
     "minSpacing": 6,
     "colliderRadius": 1.0,
-    "labelTriggerRadius": 6
+    "labelTriggerRadius": 6,
+    "tombstones": [
+      {
+        "name": "Brokode",
+        "race": "Dwarf",
+        "class": "Priest",
+        "level": "6",
+        "fromDate": "22.07.2025",
+        "toDate": "22.07.2025",
+        "quote": "Died valiantly fighting a giant.",
+        "tombstoneNumber": 1
+      },
+      {
+        "name": "Geilisau",
+        "race": "Human",
+        "class": "Mage",
+        "level": "8",
+        "fromDate": "22.07.2025",
+        "toDate": "23.07.2025",
+        "quote": "Died a geili sau.",
+        "tombstoneNumber": 5
+      },
+      {
+        "name": "WakeHolder",
+        "race": "Dwarf",
+        "class": "Priest",
+        "level": "7",
+        "fromDate": "22.07.2025",
+        "toDate": "23.07.2025",
+        "quote": "Did not see the bear.",
+        "tombstoneNumber": 4
+      },
+      {
+        "name": "Gâtsù",
+        "race": "Night Elf",
+        "class": "Hunter",
+        "level": "12",
+        "fromDate": "22.07.2025",
+        "toDate": "26.07.2025",
+        "quote": "The brave die never, though they sleep in dust: Their courage nerves a thousand living men.",
+        "tombstoneNumber": 2
+      },
+      {
+        "name": "Furyal",
+        "race": "Night Elf",
+        "class": "Warrior",
+        "level": "17",
+        "fromDate": "22.07.2025",
+        "toDate": "27.07.2025",
+        "quote": "Murlocs...",
+        "tombstoneNumber": 2
+      },
+      {
+        "name": "Sparepart",
+        "race": "Dwarf",
+        "class": "Priest",
+        "level": "14",
+        "fromDate": "22.07.2025",
+        "toDate": "27.07.2025",
+        "quote": "Wasn't me.",
+        "tombstoneNumber": 6
+      },
+      {
+        "name": "Furyest",
+        "race": "Night Elf",
+        "class": "Warrior",
+        "level": "8",
+        "fromDate": "27.07.2025",
+        "toDate": "28.07.2025",
+        "quote": "Who was this guy even.",
+        "tombstoneNumber": 3
+      },
+      {
+        "name": "Sparepartii",
+        "race": "Dwarf",
+        "class": "Priest",
+        "level": "9",
+        "fromDate": "27.07.2025",
+        "toDate": "28.07.2025",
+        "quote": "Fell to the stunning beauty of Rockjaws.",
+        "tombstoneNumber": 5
+      },
+      {
+        "name": "Sparepartiiv",
+        "race": "Dwarf",
+        "class": "Priest",
+        "level": "9",
+        "fromDate": "28.07.2025",
+        "toDate": "28.07.2025",
+        "quote": "Attracted lepracy.",
+        "tombstoneNumber": 3
+      },
+      {
+        "name": "Sparepartiv",
+        "race": "Dwarf",
+        "class": "Priest",
+        "level": "7",
+        "fromDate": "28.07.2025",
+        "toDate": "29.07.2025",
+        "quote": "Trolls be trollin'.",
+        "tombstoneNumber": 7
+      },
+      {
+        "name": "Swarly",
+        "race": "Gnome",
+        "class": "Warlock",
+        "level": "16",
+        "fromDate": "22.07.2025",
+        "toDate": "30.07.2025",
+        "quote": "Dragons in a starting zone? Really??",
+        "tombstoneNumber": 7
+      },
+      {
+        "name": "Gâtsû",
+        "race": "Human",
+        "class": "Rogue",
+        "level": "9",
+        "fromDate": "26.07.2025",
+        "toDate": "31.07.2025",
+        "quote": "\"Schaff ich de lvl 10ner?\"",
+        "tombstoneNumber": 1
+      },
+      {
+        "name": "Sparepartv",
+        "race": "Dwarf",
+        "class": "Priest",
+        "level": "16",
+        "fromDate": "28.07.2025",
+        "toDate": "01.08.2025",
+        "quote": "Never trust a cave.",
+        "tombstoneNumber": 6
+      },
+      {
+        "name": "Swarlyy",
+        "race": "Gnome",
+        "class": "Warlock",
+        "level": "16",
+        "fromDate": "30.07.2025",
+        "toDate": "01.08.2025",
+        "quote": "rest in peace.",
+        "tombstoneNumber": 2
+      }
+    ]
   }
 }

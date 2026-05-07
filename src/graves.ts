@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { SCENE_UTIL, mulberry32, resolveSeed } from './utils';
+import { mulberry32, resolveSeed, getModelUrl } from './utils';
+import { scene, loader } from './scene';
 import { getHeightAt } from './floor';
 import { colliders } from './colliders';
 import { addGraveLabel } from './labels';
-import tombstones from './data/tombstones.json';
 import config from './data/config.json';
 
 export type GraveData = {
@@ -34,7 +34,7 @@ const pickPosition = (placed: Array<{ x: number; z: number }>): { x: number; z: 
 };
 
 export const buildGraves = async (): Promise<void> => {
-  const gltf = await SCENE_UTIL.loader.loadAsync(new URL('./assets/models/grave_1.gltf', import.meta.url).href);
+  const gltf = await loader.loadAsync(getModelUrl(config.graves.model));
 
   gltf.scene.traverse((node) => {
     if ((node as THREE.Mesh).isMesh) {
@@ -44,7 +44,7 @@ export const buildGraves = async (): Promise<void> => {
 
   const placed: Array<{ x: number; z: number }> = [];
 
-  for (const stone of tombstones as GraveData[]) {
+  for (const stone of config.graves.tombstones as GraveData[]) {
     const { x, z } = pickPosition(placed);
     placed.push({ x, z });
     const y = getHeightAt(x, z);
@@ -52,7 +52,7 @@ export const buildGraves = async (): Promise<void> => {
     const grave = gltf.scene.clone(true);
     grave.position.set(x, y, z);
     grave.rotation.y = rng() * Math.PI * 2;
-    SCENE_UTIL.scene.add(grave);
+    scene.add(grave);
 
     colliders.push({ x, z, radius: GRAVE_RADIUS });
     addGraveLabel(stone, new THREE.Vector3(x, y, z), LABEL_TRIGGER);

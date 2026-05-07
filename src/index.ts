@@ -1,20 +1,12 @@
 import * as THREE from 'three';
-import { sizes, SCENE_UTIL } from './utils';
+import { sizes } from './utils';
+import { scene } from './scene';
 import { camera, playerPos, updatePlayer } from './player';
-import { labelRenderer } from './labels';
-import { updateLabels } from './labels';
+import { labelRenderer, updateLabels } from './labels';
 import { buildFloor } from './floor';
 import { buildClouds, updateClouds } from './clouds';
 import { buildForest } from './forest';
 import { updateSun } from './sun';
-import config from './data/config.json';
-
-SCENE_UTIL.scene.background = new THREE.Color(config.sky.color);
-SCENE_UTIL.scene.fog = new THREE.FogExp2(config.sky.color, config.sky.fogDensity);
-
-const light = new THREE.HemisphereLight(config.ambient.skyColor, config.ambient.groundColor, config.ambient.intensity);
-light.position.set(0.5, 1, 0.75);
-SCENE_UTIL.scene.add(light);
 
 const canvas = document.querySelector('canvas.webgl');
 if (!canvas) throw new Error('Canvas element not found');
@@ -38,6 +30,6 @@ renderer.setAnimationLoop(() => {
   updateClouds(delta);
   updateSun(camera.position);
   updateLabels(playerPos);
-  renderer.render(SCENE_UTIL.scene, camera);
-  labelRenderer.render(SCENE_UTIL.scene, camera);
+  renderer.render(scene, camera);
+  labelRenderer.render(scene, camera);
 });

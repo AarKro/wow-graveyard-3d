@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { sizes, SCENE_UTIL } from './utils';
+import { sizes } from './utils';
+import { scene } from './scene';
 import type { GraveData } from './graves';
 
 export const labelRenderer = new CSS2DRenderer();
@@ -14,7 +15,7 @@ const entries: LabelEntry[] = [];
 const attach = (el: HTMLElement, pos: THREE.Vector3): void => {
   const obj = new CSS2DObject(el);
   obj.position.copy(pos);
-  SCENE_UTIL.scene.add(obj);
+  scene.add(obj);
 };
 
 export const addGraveLabel = (

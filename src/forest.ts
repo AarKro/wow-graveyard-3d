@@ -1,6 +1,7 @@
 import { GLTF } from 'three/addons/loaders/GLTFLoader.js';
 import * as THREE from 'three';
-import { SCENE_UTIL, mulberry32, resolveSeed } from './utils';
+import { mulberry32, resolveSeed, getModelUrl } from './utils';
+import { scene, loader } from './scene';
 import { getHeightAt, WORLD_CHUNK_SIZE } from './floor';
 import { colliders } from './colliders';
 import config from './data/config.json';
@@ -123,26 +124,18 @@ const spawnInstancedMeshes = (gltfs: GLTF[], placements: Placement[]): void => {
       });
       mesh.instanceMatrix.needsUpdate = true;
       mesh.computeBoundingSphere();
-      SCENE_UTIL.scene.add(mesh);
+      scene.add(mesh);
     });
   });
 };
 
 const loadModels = (urls: string[]): Promise<GLTF[]> =>
-  Promise.all(urls.map(url => SCENE_UTIL.loader.loadAsync(url)));
+  Promise.all(urls.map(url => loader.loadAsync(url)));
 
 export const buildForest = async (): Promise<void> => {
   const [treeGltfs, bushGltfs] = await Promise.all([
-    loadModels([
-      new URL('./assets/models/tree_1.gltf', import.meta.url).href,
-      new URL('./assets/models/tree_2.gltf', import.meta.url).href,
-      new URL('./assets/models/tree_3.gltf', import.meta.url).href,
-    ]),
-    loadModels([
-      new URL('./assets/models/bush_1.gltf', import.meta.url).href,
-      new URL('./assets/models/bush_2.gltf', import.meta.url).href,
-      new URL('./assets/models/bush_3.gltf', import.meta.url).href,
-    ]),
+    loadModels(config.forest.trees.models.map(getModelUrl)),
+    loadModels(config.forest.bushes.models.map(getModelUrl)),
   ]);
 
   const treePlaced: Array<{ x: number; z: number }> = [];

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { SCENE_UTIL } from './utils';
+import { scene } from './scene';
 import config from './data/config.json';
 
 const SUN_DISTANCE = config.sun.distance;
@@ -26,8 +26,8 @@ nearShadowCam.right = nearShadowCam.top = nearCfg.shadowCameraSize;
 nearShadowCam.near = SHADOW_CAM_NEAR;
 nearShadowCam.far = SHADOW_CAM_FAR;
 nearShadowCam.updateProjectionMatrix();
-SCENE_UTIL.scene.add(sunLight);
-SCENE_UTIL.scene.add(sunLight.target);
+scene.add(sunLight);
+scene.add(sunLight.target);
 
 const farSunLight = new THREE.DirectionalLight(farCfg.color, farCfg.intensity);
 farSunLight.castShadow = true;
@@ -40,8 +40,8 @@ farShadowCam.right = farShadowCam.top = farCfg.shadowCameraSize;
 farShadowCam.near = SHADOW_CAM_NEAR;
 farShadowCam.far = SHADOW_CAM_FAR;
 farShadowCam.updateProjectionMatrix();
-SCENE_UTIL.scene.add(farSunLight);
-SCENE_UTIL.scene.add(farSunLight.target);
+scene.add(farSunLight);
+scene.add(farSunLight.target);
 
 const coreMesh = new THREE.Mesh(
   new THREE.PlaneGeometry(coreCfg.size, coreCfg.size),
@@ -57,7 +57,7 @@ haloMesh.position.z = -0.5;
 const sunGroup = new THREE.Group();
 sunGroup.add(haloMesh);
 sunGroup.add(coreMesh);
-SCENE_UTIL.scene.add(sunGroup);
+scene.add(sunGroup);
 
 export const sunWorldPos = new THREE.Vector3();
 

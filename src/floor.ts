@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { createNoise2D } from 'simplex-noise';
-import { SCENE_UTIL, mulberry32, resolveSeed } from './utils';
+import { mulberry32, resolveSeed } from './utils';
+import { scene } from './scene';
 import config from './data/config.json';
 
 export const TILE_SIZE = config.world.tileSize;
@@ -75,7 +76,7 @@ const buildChunk = (
   mesh.instanceMatrix.needsUpdate = true;
   mesh.instanceColor!.needsUpdate = true;
   mesh.computeBoundingSphere();
-  SCENE_UTIL.scene.add(mesh);
+  scene.add(mesh);
 };
 
 export const buildFloor = (): void => {

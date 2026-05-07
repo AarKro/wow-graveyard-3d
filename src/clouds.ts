@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { SCENE_UTIL, mulberry32, resolveSeed } from './utils';
+import { mulberry32, resolveSeed } from './utils';
+import { scene } from './scene';
 import config from './data/config.json';
 
 const CLOUD_SEED = resolveSeed(config.clouds.seed);
@@ -63,7 +64,7 @@ export const buildClouds = (): void => {
     const group = new THREE.Group();
     group.add(mesh);
     group.position.set(cloudX, cloudY, cloudZ);
-    SCENE_UTIL.scene.add(group);
+    scene.add(group);
     cloudEntries.push({ group });
   }
 };
