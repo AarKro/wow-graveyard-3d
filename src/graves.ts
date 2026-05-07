@@ -33,7 +33,7 @@ const pickPosition = (placed: Array<{ x: number; z: number }>): { x: number; z: 
 };
 
 export const buildGraves = async (): Promise<void> => {
-  const gltf = await SCENE_UTIL.loader.loadAsync('/src/assets/models/grave_1.gltf');
+  const gltf = await SCENE_UTIL.loader.loadAsync(new URL('./assets/models/grave_1.gltf', import.meta.url).href);
 
   gltf.scene.traverse((node) => {
     if ((node as THREE.Mesh).isMesh) {
