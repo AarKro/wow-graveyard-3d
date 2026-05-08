@@ -4,6 +4,7 @@ import { mulberry32, resolveSeed, getModelUrl } from './utils';
 import { scene, loader } from './scene';
 import { getHeightAt } from './terrain';
 import { colliders } from './colliders';
+import { isOnPath } from './path';
 import config from './data/config.json';
 
 const TREE_INNER_RADIUS = config.forest.trees.innerRadius;
@@ -49,7 +50,7 @@ const pickInRing = (
     const z = Math.sin(angle) * radius;
     const t = (radius - innerR) / (outerR - innerR);
     const spacing = innerSpacing + (outerSpacing - innerSpacing) * t;
-    if (placed.every(p => Math.hypot(p.x - x, p.z - z) >= spacing)) return { x, z };
+    if (!isOnPath(x, z) && placed.every(p => Math.hypot(p.x - x, p.z - z) >= spacing)) return { x, z };
   }
   return null;
 };

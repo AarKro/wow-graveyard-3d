@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { mulberry32, resolveSeed, getModelUrl } from './utils';
 import { scene, loader } from './scene';
 import { getHeightAt } from './terrain';
+import { isOnPath } from './path';
 import config from './data/config.json';
 
 const cfg = config.flowerPatches;
@@ -44,12 +45,12 @@ export const buildFlowerPatches = async (): Promise<void> => {
       const dist = rng() * cfg.patchSpread;
       const x = center.x + Math.cos(angle) * dist;
       const z = center.z + Math.sin(angle) * dist;
-      placements.push({
-        x, y: getHeightAt(x, z), z,
-        rotation: rng() * Math.PI * 2,
-        scale: cfg.scaleMin + rng() * (cfg.scaleMax - cfg.scaleMin),
-        variantIdx: Math.floor(rng() * gltfs.length),
-      });
+      const rotation = rng() * Math.PI * 2;
+      const scale = cfg.scaleMin + rng() * (cfg.scaleMax - cfg.scaleMin);
+      const variantIdx = Math.floor(rng() * gltfs.length);
+      if (!isOnPath(x, z)) {
+        placements.push({ x, y: getHeightAt(x, z), z, rotation, scale, variantIdx });
+      }
     }
   }
 

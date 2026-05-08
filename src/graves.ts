@@ -53,7 +53,8 @@ export const buildGraves = async (): Promise<void> => {
     const graveIndex = stone.tombstoneNumber - 1;
     const grave = graveGltfs[graveIndex].scene.clone(true);
     grave.position.set(x, y, z);
-    grave.rotation.y = (rng() * 2 - 1) * cfg.jitterRot;
+    const baseRot = col === 0 ? Math.PI / 2 : -Math.PI / 2;
+    grave.rotation.y = baseRot + (rng() * 2 - 1) * cfg.jitterRot;
     scene.add(grave);
 
     colliders.push({ x, z, radius: cfg.colliderRadius });

@@ -81,7 +81,7 @@
     "spread": 2000,
     "height": 250,
     "cellSize": 30,
-    "cellHeight": 8,
+    "cellHeight": 12,
     "driftSpeed": 2,
     "windAngle": 1.5
   },
@@ -89,7 +89,7 @@
     "trees": {
       "seed": 7,
       "models": ["tree_1.gltf", "tree_2.gltf", "tree_3.gltf"],
-      "innerRadius": 60,
+      "innerRadius": 45,
       "outerRadius": 250,
       "count": 1500,
       "spacingInner": 20,
@@ -101,7 +101,7 @@
     "bushes": {
       "seed": 13,
       "models": ["bush_1.gltf", "bush_2.gltf", "bush_3.gltf"],
-      "innerRadius": 55,
+      "innerRadius": 35,
       "outerRadius": 200,
       "count": 700,
       "spacingInner": 15,
@@ -117,7 +117,7 @@
     "snakeAmplitude": 12,
     "snakeFrequency": 0.05,
     "fadeLength": 15,
-    "color": "#7a5c3a"
+    "color": "#917351"
   },
   "flowerPatches": {
     "seed": 55,
