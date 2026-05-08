@@ -8,9 +8,9 @@
   "terrain": {
     "seed": 42,
     "tileSize": 1,
-    "heightScale": 20,
+    "heightScale": 22,
     "noiseScale": 0.015,
-    "heightFalloff": 1.5,
+    "heightFalloff": 1.2,
     "tileDepth": 10,
     "colorLow": "#6b8050",
     "colorHigh": "#9eb87a"
@@ -89,10 +89,10 @@
     "trees": {
       "seed": 7,
       "models": ["tree_1.gltf", "tree_2.gltf", "tree_3.gltf"],
-      "innerRadius": 45,
+      "innerRadius": 60,
       "outerRadius": 250,
       "count": 1500,
-      "spacingInner": 30,
+      "spacingInner": 20,
       "spacingOuter": 4,
       "colliderRadius": 2,
       "scaleMin": 0.8,
@@ -101,14 +101,26 @@
     "bushes": {
       "seed": 13,
       "models": ["bush_1.gltf", "bush_2.gltf", "bush_3.gltf"],
-      "innerRadius": 35,
+      "innerRadius": 55,
       "outerRadius": 200,
       "count": 700,
-      "spacingInner": 25,
+      "spacingInner": 15,
       "spacingOuter": 3,
       "scaleMin": 0.8,
       "scaleMax": 1.4
     }
+  },
+  "flowerPatches": {
+    "seed": 55,
+    "count": 300,
+    "worldRadius": 210,
+    "patchSpacing": 12,
+    "flowersMin": 3,
+    "flowersMax": 7,
+    "patchSpread": 7,
+    "scaleMin": 0.7,
+    "scaleMax": 1.4,
+    "models": ["flower_1.gltf", "flower_2.gltf", "flower_3.gltf", "flower_4.gltf", "flower_5.gltf", "flower_6.gltf"]
   },
   "graves": {
     "seed": 42,
@@ -122,8 +134,8 @@
     "labelTriggerRadius": 6,
     "flowers": {
       "models": ["flower_1.gltf", "flower_2.gltf", "flower_3.gltf", "flower_4.gltf", "flower_5.gltf", "flower_6.gltf"],
-      "perGrave": 5,
-      "spread": 2,
+      "perGrave": 8,
+      "spread": 3,
       "scaleMin": 0.8,
       "scaleMax": 1.3
     },

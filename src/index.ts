@@ -9,6 +9,7 @@ import { buildForest } from './forest';
 import { updateSun } from './sun';
 import { buildComposer } from './godrays';
 import { buildGraves } from './graves';
+import { buildFlowerPatches } from './flowerPatches';
 
 const canvas = document.querySelector('canvas.webgl');
 if (!canvas) throw new Error('Canvas element not found');
@@ -22,6 +23,7 @@ buildTerrain();
 buildClouds();
 buildForest();
 buildGraves();
+buildFlowerPatches();
 
 const composer = buildComposer(renderer, camera);
 
