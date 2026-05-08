@@ -15,7 +15,7 @@ const MOUSE_SENS = config.player.mouseSensitivity;
 let yaw = 0;
 let pitch = 0;
 
-export const playerPos = new THREE.Vector3(0, 30, 0);
+export const playerPos = new THREE.Vector3(0, 30, 55);
 const velocity = new THREE.Vector3();
 
 let moveForward = false;
@@ -28,9 +28,11 @@ let canJump = false;
 export const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 1, 2000);
 
 let isLocked = false;
+const overlay = document.getElementById('overlay') as HTMLElement;
 document.body.addEventListener('click', () => document.body.requestPointerLock());
 document.addEventListener('pointerlockchange', () => {
   isLocked = document.pointerLockElement === document.body;
+  overlay.classList.toggle('hidden', isLocked);
 });
 document.addEventListener('mousemove', (e: MouseEvent) => {
   if (!isLocked) return;
