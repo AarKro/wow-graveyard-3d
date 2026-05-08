@@ -42,39 +42,30 @@ scene.add(fillLight.target);
 
 const spriteCfg = config.sun.sprite;
 
-const buildSunTexture = (): THREE.CanvasTexture => {
+// Shared builder for the two-layer (border + core) square sprite textures
+// used by both the sun disc and the glow quad.
+const buildSpriteTexture = (
+  borderColor: string, borderOpacity: number,
+  coreColor: string, coreOpacity: number,
+): THREE.CanvasTexture => {
   const size = 256;
   const canvas = document.createElement('canvas');
   canvas.width = size;
   canvas.height = size;
   const ctx = canvas.getContext('2d')!;
-  const border = size * spriteCfg.borderRatio;
-  ctx.fillStyle = spriteCfg.discBorderColor;
+  const inset = size * spriteCfg.borderRatio;
+  ctx.globalAlpha = borderOpacity;
+  ctx.fillStyle = borderColor;
   ctx.fillRect(0, 0, size, size);
-  ctx.fillStyle = spriteCfg.discCoreColor;
-  ctx.fillRect(border, border, size - border * 2, size - border * 2);
-  return new THREE.CanvasTexture(canvas);
-};
-
-const buildGlowTexture = (): THREE.CanvasTexture => {
-  const size = 256;
-  const canvas = document.createElement('canvas');
-  canvas.width = size;
-  canvas.height = size;
-  const ctx = canvas.getContext('2d')!;
-  const border = size * spriteCfg.borderRatio;
-  ctx.globalAlpha = spriteCfg.glowBorderOpacity;
-  ctx.fillStyle = spriteCfg.glowBorderColor;
-  ctx.fillRect(0, 0, size, size);
-  ctx.globalAlpha = spriteCfg.glowCoreOpacity;
-  ctx.fillStyle = spriteCfg.glowCoreColor;
-  ctx.fillRect(border, border, size - border * 2, size - border * 2);
+  ctx.globalAlpha = coreOpacity;
+  ctx.fillStyle = coreColor;
+  ctx.fillRect(inset, inset, size - inset * 2, size - inset * 2);
   ctx.globalAlpha = 1;
   return new THREE.CanvasTexture(canvas);
 };
 
 const sunSprite = new THREE.Sprite(new THREE.SpriteMaterial({
-  map: buildSunTexture(),
+  map: buildSpriteTexture(spriteCfg.discBorderColor, 1, spriteCfg.discCoreColor, 1),
   fog: false,
   depthWrite: false,
   transparent: true,
@@ -85,7 +76,7 @@ sunSprite.renderOrder = 0;
 scene.add(sunSprite);
 
 const sunGlow = new THREE.Sprite(new THREE.SpriteMaterial({
-  map: buildGlowTexture(),
+  map: buildSpriteTexture(spriteCfg.glowBorderColor, spriteCfg.glowBorderOpacity, spriteCfg.glowCoreColor, spriteCfg.glowCoreOpacity),
   fog: false,
   depthWrite: false,
   blending: THREE.AdditiveBlending,

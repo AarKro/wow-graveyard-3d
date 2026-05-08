@@ -1,6 +1,6 @@
 import { GLTF } from 'three/addons/loaders/GLTFLoader.js';
 import * as THREE from 'three';
-import { mulberry32, resolveSeed, getModelUrl } from './utils';
+import { mulberry32, resolveSeed, getModelUrl, extractMesh } from './utils';
 import { scene, loader } from './scene';
 import { getHeightAt } from './terrain';
 import { colliders } from './colliders';
@@ -25,12 +25,16 @@ const BUSH_SCALE_MIN = config.forest.bushes.scaleMin;
 const BUSH_SCALE_MAX = config.forest.bushes.scaleMax;
 
 const WORLD_CHUNK_SIZE = config.world.chunkSize * config.terrain.tileSize;
-const CARDINAL_ROTATIONS = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2];
+
+// Cardinal angles as plain degrees, converted to radians for Three.js.
+// Trees snap to 0/90/180/270° for a hand-placed, voxel-art feel rather than
+// fully random rotation.
+const CARDINAL_ROTATIONS = [0, 90, 180, 270].map(deg => (deg * Math.PI) / 180);
 
 const treeRng = mulberry32(resolveSeed(config.forest.trees.seed));
 const bushRng = mulberry32(resolveSeed(config.forest.bushes.seed));
 
-type Placement = { x: number; y: number; z: number; rotation: number; scale: number; variantIdx: number };
+export type Placement = { x: number; y: number; z: number; rotation: number; scale: number; variantIdx: number };
 
 // Returns a random (x, z) position within an annular ring. Min spacing shrinks
 // linearly from innerSpacing to outerSpacing so density increases with radius.
@@ -87,19 +91,11 @@ const collectPlacements = (
 
 // Builds one InstancedMesh per variant per spatial chunk so Three.js can
 // frustum-cull chunks behind or beside the player independently.
-// Geometry is extracted once per variant and shared across all its chunks.
-const spawnInstancedMeshes = (gltfs: GLTF[], placements: Placement[]): void => {
+export const spawnInstancedMeshes = (gltfs: GLTF[], placements: Placement[]): void => {
   const dummy = new THREE.Object3D();
 
   // Extract geometry and material once per variant, baking the centering node transform in.
-  const variants = gltfs.map(gltf => {
-    gltf.scene.updateMatrixWorld(true);
-    const source = gltf.scene.getObjectByProperty('isMesh', true) as THREE.Mesh;
-    const geometry = source.geometry.clone();
-    geometry.applyMatrix4(source.matrixWorld);
-    const material = Array.isArray(source.material) ? source.material[0] : source.material;
-    return { geometry, material };
-  });
+  const variants = gltfs.map(extractMesh);
 
   // Group placements by chunk key and variant index.
   const chunks = new Map<string, Placement[][]>();

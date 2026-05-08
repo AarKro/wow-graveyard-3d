@@ -13,8 +13,7 @@ const DRIFT_SPEED = config.clouds.driftSpeed;
 const WIND_X = Math.cos(config.clouds.windAngle);
 const WIND_Z = Math.sin(config.clouds.windAngle);
 
-type CloudEntry = { group: THREE.Group };
-const cloudEntries: CloudEntry[] = [];
+const cloudGroups: THREE.Group[] = [];
 
 const makeShape = (width: number, depth: number, rng: () => number): Array<[number, number]> => {
   const cells = new Array<[number, number]>();
@@ -65,13 +64,13 @@ export const buildClouds = (): void => {
     group.add(mesh);
     group.position.set(cloudX, cloudY, cloudZ);
     scene.add(group);
-    cloudEntries.push({ group });
+    cloudGroups.push(group);
   }
 };
 
 export const updateClouds = (delta: number): void => {
   const span = CLOUD_SPREAD * 2;
-  for (const { group } of cloudEntries) {
+  for (const group of cloudGroups) {
     group.position.x += WIND_X * DRIFT_SPEED * delta;
     group.position.z += WIND_Z * DRIFT_SPEED * delta;
 

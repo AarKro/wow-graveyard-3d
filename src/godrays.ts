@@ -5,11 +5,8 @@ import { scene } from './scene';
 import { farSunLight } from './sun';
 import config from './data/config.json';
 
-
 export const buildComposer = (renderer: THREE.WebGLRenderer, camera: THREE.PerspectiveCamera): EffectComposer => {
-  let composer: EffectComposer;
-  
-  composer = new EffectComposer(renderer, { frameBufferType: THREE.HalfFloatType });
+  const composer = new EffectComposer(renderer, { frameBufferType: THREE.HalfFloatType });
   composer.addPass(new RenderPass(scene, camera));
 
   const cfg = config.sun.godrays;
@@ -24,6 +21,6 @@ export const buildComposer = (renderer: THREE.WebGLRenderer, camera: THREE.Persp
   });
   godraysPass.renderToScreen = true;
   composer.addPass(godraysPass);
-  
+
   return composer;
 };

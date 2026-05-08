@@ -9,7 +9,7 @@ labelRenderer.setSize(sizes.width, sizes.height);
 labelRenderer.domElement.classList.add('label-renderer');
 document.body.appendChild(labelRenderer.domElement);
 
-type LabelEntry = { elements: HTMLElement[]; worldPos: THREE.Vector3; triggerRadius: number };
+type LabelEntry = { elements: HTMLElement[]; worldPos: THREE.Vector3; triggerRadiusSq: number };
 const entries: LabelEntry[] = [];
 
 const attach = (el: HTMLElement, pos: THREE.Vector3): void => {
@@ -51,14 +51,14 @@ export const addGraveLabel = (
   bottom.append(dates);
   attach(bottom, gravePos.clone());
 
-  entries.push({ elements: [top, bottom], worldPos: gravePos.clone(), triggerRadius });
+  entries.push({ elements: [top, bottom], worldPos: gravePos.clone(), triggerRadiusSq: triggerRadius * triggerRadius });
 };
 
 export const updateLabels = (playerPos: THREE.Vector3): void => {
   for (const entry of entries) {
-    const deltaX = playerPos.x - entry.worldPos.x;
-    const deltaZ = playerPos.z - entry.worldPos.z;
-    const opacity = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ) < entry.triggerRadius ? '1' : '0';
+    const dx = playerPos.x - entry.worldPos.x;
+    const dz = playerPos.z - entry.worldPos.z;
+    const opacity = dx * dx + dz * dz < entry.triggerRadiusSq ? '1' : '0';
     for (const el of entry.elements) el.style.opacity = opacity;
   }
 };

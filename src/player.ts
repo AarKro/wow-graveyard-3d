@@ -15,6 +15,7 @@ const MOUSE_SENS = config.player.mouseSensitivity;
 let yaw = 0;
 let pitch = 0;
 
+// Start above any terrain — gravity settles the player on the first tick.
 export const playerPos = new THREE.Vector3(0, 30, config.path.startZ);
 const velocity = new THREE.Vector3();
 
