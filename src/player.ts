@@ -15,7 +15,7 @@ const MOUSE_SENS = config.player.mouseSensitivity;
 let yaw = 0;
 let pitch = 0;
 
-export const playerPos = new THREE.Vector3(0, 30, 55);
+export const playerPos = new THREE.Vector3(0, 30, config.path.startZ);
 const velocity = new THREE.Vector3();
 
 let moveForward = false;

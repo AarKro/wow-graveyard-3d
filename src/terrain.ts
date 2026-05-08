@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { createNoise2D } from 'simplex-noise';
 import { mulberry32, resolveSeed } from './utils';
 import { scene } from './scene';
+import { isOnPath } from './path';
 import config from './data/config.json';
 
 const TILE_SIZE = config.terrain.tileSize;
@@ -43,6 +44,7 @@ export const getHeightAt = (worldX: number, worldZ: number): number => {
 
 const COLOR_LOW = new THREE.Color(config.terrain.colorLow);
 const COLOR_HIGH = new THREE.Color(config.terrain.colorHigh);
+const COLOR_PATH = new THREE.Color(config.path.color);
 
 const buildChunk = (
   chunkX: number,
@@ -70,7 +72,11 @@ const buildChunk = (
       matrix.setPosition(worldX, centerY, worldZ);
       mesh.setMatrixAt(tileIndex, matrix);
 
-      color.lerpColors(COLOR_LOW, COLOR_HIGH, topY / HEIGHT_SCALE);
+      if (isOnPath(worldX, worldZ)) {
+        color.copy(COLOR_PATH);
+      } else {
+        color.lerpColors(COLOR_LOW, COLOR_HIGH, topY / HEIGHT_SCALE);
+      }
       mesh.setColorAt(tileIndex, color);
 
       tileIndex++;

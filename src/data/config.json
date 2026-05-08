@@ -110,6 +110,15 @@
       "scaleMax": 1.4
     }
   },
+  "path": {
+    "startZ": 170,
+    "endZ": 40,
+    "width": 6,
+    "snakeAmplitude": 12,
+    "snakeFrequency": 0.05,
+    "fadeLength": 15,
+    "color": "#7a5c3a"
+  },
   "flowerPatches": {
     "seed": 55,
     "count": 300,
