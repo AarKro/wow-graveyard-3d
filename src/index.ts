@@ -25,6 +25,7 @@ buildForest();
 buildGraves();
 buildFlowerPatches();
 
+// add godrays (sun rays) post-processing effect after all scene objects are created, so they are included in the depth buffer used for light scattering
 const composer = buildComposer(renderer, camera);
 
 let prevTime = performance.now();
@@ -38,7 +39,7 @@ renderer.setAnimationLoop(() => {
   updateClouds(delta);
   updateSun(camera.position);
   updateLabels(playerPos);
-  
+
   composer.render();
   labelRenderer.render(scene, camera);
 });

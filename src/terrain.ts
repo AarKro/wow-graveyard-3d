@@ -25,6 +25,9 @@ const heightMap: number[][] = Array.from({ length: GRID_SIZE }, (_, gridZ) =>
     const t = Math.min(Math.sqrt(worldX * worldX + worldZ * worldZ) / HALF_WORLD, 1);
     const noiseX = gridX * NOISE_SCALE;
     const noiseZ = gridZ * NOISE_SCALE;
+    // Fractional Brownian motion (fBm): three octaves of noise at increasing
+    // frequencies and decreasing amplitudes layer coarse shape with fine detail.
+    // https://en.wikipedia.org/wiki/Fractional_Brownian_motion
     const noiseValue =
       noise2D(noiseX,       noiseZ      ) * 0.60 +
       noise2D(noiseX * 2.1, noiseZ * 2.1) * 0.25 +

@@ -23,7 +23,10 @@ export const buildFlowerPatches = async (): Promise<void> => {
     return { geometry, material };
   });
 
-  // Scatter patch centers across the world using uniform-disk sampling with minimum spacing.
+  // Scatter patch centres across the world. sqrt(rng()) radius gives uniform
+  // density on a disk — without the sqrt, points cluster toward the centre.
+  // (Disk point picking: mathworld.wolfram.com/DiskPointPicking.html)
+  // The 12× attempt budget absorbs rejects from the minimum-spacing check.
   const patchCenters: Array<{ x: number; z: number }> = [];
   const maxAttempts = cfg.count * 12;
   for (let attempt = 0; attempt < maxAttempts && patchCenters.length < cfg.count; attempt++) {

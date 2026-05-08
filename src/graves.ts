@@ -53,6 +53,8 @@ export const buildGraves = async (): Promise<void> => {
     const graveIndex = stone.tombstoneNumber - 1;
     const grave = graveGltfs[graveIndex].scene.clone(true);
     grave.position.set(x, y, z);
+    // Col 0 sits left of the path (x < 0) and faces +x; col 1 is right and faces -x.
+    // Both ends up looking inward toward the path centreline at x = 0.
     const baseRot = col === 0 ? Math.PI / 2 : -Math.PI / 2;
     grave.rotation.y = baseRot + (rng() * 2 - 1) * cfg.jitterRot;
     scene.add(grave);
