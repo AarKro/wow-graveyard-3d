@@ -127,8 +127,8 @@
     "flowersMin": 3,
     "flowersMax": 7,
     "patchSpread": 7,
-    "scaleMin": 0.7,
-    "scaleMax": 1.4,
+    "scaleMin": 0.6,
+    "scaleMax": 1.2,
     "models": ["flower_2.gltf", "flower_3.gltf", "flower_5.gltf", "flower_6.gltf"]
   },
   "graves": {
@@ -145,8 +145,8 @@
       "models": ["flower_1.gltf", "flower_2.gltf", "flower_3.gltf", "flower_4.gltf", "flower_5.gltf", "flower_6.gltf"],
       "perGrave": 8,
       "spread": 2.5,
-      "scaleMin": 0.8,
-      "scaleMax": 1.3
+      "scaleMin": 1,
+      "scaleMax": 1.6
     },
     "tombstones": [
       {
