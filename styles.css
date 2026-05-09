@@ -188,3 +188,43 @@ body {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.45; }
 }
+
+.overlay__credits {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 28px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(180, 140, 60, 0.2);
+}
+
+.overlay__credits-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6a5a38;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.overlay__credits-github {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #6a5a38;
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 0.2s ease;
+}
+
+.overlay__credits-github:hover {
+  color: #c8b882;
+}
+
+.overlay__credits-github svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
