@@ -31,18 +31,21 @@ buildFlowerPatches();
 // add godrays (sun rays) post-processing effect after all scene objects are created, so they are included in the depth buffer used for light scattering
 const composer = buildComposer(renderer, camera);
 
-// Keep the renderer, camera and overlay renderers in sync with the window —
-// essential on mobile where orientation changes resize the viewport.
+// Keep renderer, camera and label renderer in sync with the window.
+// setSize reallocates GPU framebuffers, so debounce it — firing on every
+// pixel while the user drags a window edge causes severe framebuffer thrash.
+let resizeDebounce: ReturnType<typeof setTimeout>;
 const onResize = (): void => {
-  sizes.width = window.innerWidth;
-  sizes.height = window.innerHeight;
-
-  camera.aspect = sizes.width / sizes.height;
-  camera.updateProjectionMatrix();
-
-  renderer.setSize(sizes.width, sizes.height);
-  composer.setSize(sizes.width, sizes.height);
-  labelRenderer.setSize(sizes.width, sizes.height);
+  clearTimeout(resizeDebounce);
+  resizeDebounce = setTimeout(() => {
+    sizes.width = window.innerWidth;
+    sizes.height = window.innerHeight;
+    camera.aspect = sizes.width / sizes.height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(sizes.width, sizes.height);
+    composer.setSize(sizes.width, sizes.height);
+    labelRenderer.setSize(sizes.width, sizes.height);
+  }, 150);
 };
 window.addEventListener('resize', onResize);
 window.addEventListener('orientationchange', onResize);
