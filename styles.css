@@ -100,6 +100,9 @@ html, body {
   width: 90%;
   box-shadow: 0 0 60px rgba(0, 0, 0, 0.9), inset 0 0 30px rgba(0, 0, 0, 0.4);
   cursor: default;
+  /* Safety net: never taller than the visible viewport */
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
 }
 
 .overlay__title {
@@ -335,4 +338,60 @@ html, body {
 @keyframes rotate-hint {
   0%, 40%, 100% { transform: rotate(0deg); }
   70%, 90% { transform: rotate(-90deg); }
+}
+
+/* --- Compact overlay for short viewports (phones in landscape) ----------- */
+/* Kicks in below 520 px tall — well below any tablet, covers all phones.   */
+/* Desktop layout is completely unchanged above this breakpoint.              */
+@media (max-height: 520px) {
+  .overlay__content {
+    padding: 16px 24px;
+  }
+
+  .overlay__title {
+    font-size: 24px;
+    margin-bottom: 6px;
+  }
+
+  .overlay__desc {
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+
+  .overlay__controls {
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  /* Shrink the keyboard key caps */
+  .key {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+
+  .mouse-svg {
+    width: 28px;
+    height: 40px;
+  }
+
+  /* Shrink the joystick hint icons */
+  .stick-svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .overlay__cta {
+    font-size: 12px;
+  }
+
+  .overlay__credits {
+    margin-top: 14px;
+    padding-top: 10px;
+  }
+
+  .overlay__credits-name,
+  .overlay__credits-github {
+    font-size: 10px;
+  }
 }
