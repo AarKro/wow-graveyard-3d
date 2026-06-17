@@ -6,6 +6,14 @@
     <title>Wow Graveyard</title>
 
     <link rel="stylesheet" href="./styles.css">
+
+    <!-- Detect touch capability before first paint so the intro overlay shows
+         the correct control scheme (touch vs. keyboard+mouse) with no flash. -->
+    <script>
+      if (window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0) {
+        document.documentElement.classList.add('is-touch');
+      }
+    </script>
 </head>
 <body>
     <canvas class="webgl"></canvas>
@@ -53,11 +61,22 @@
 
         <div class="overlay__controls overlay__controls--touch">
           <div class="control-group">
-            <div class="stick-hint"><span class="stick-hint__dot"></span></div>
+            <svg class="stick-svg" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="28" cy="28" r="16" fill="none" stroke="currentColor" stroke-width="2.5" opacity="0.45"/>
+              <circle cx="28" cy="28" r="8" fill="currentColor" opacity="0.85"/>
+              <path d="M28 3 l4 6 h-8 z" fill="currentColor"/>
+              <path d="M28 53 l4 -6 h-8 z" fill="currentColor"/>
+              <path d="M3 28 l6 4 v-8 z" fill="currentColor"/>
+              <path d="M53 28 l-6 4 v-8 z" fill="currentColor"/>
+            </svg>
             <span class="control-label">Left stick — Move</span>
           </div>
           <div class="control-group">
-            <div class="stick-hint"><span class="stick-hint__dot"></span></div>
+            <svg class="stick-svg" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="28" cy="28" r="16" fill="none" stroke="currentColor" stroke-width="2.5" opacity="0.45"/>
+              <path d="M14 28 Q28 17 42 28 Q28 39 14 28 Z" fill="none" stroke="currentColor" stroke-width="2.4"/>
+              <circle cx="28" cy="28" r="5" fill="currentColor" opacity="0.85"/>
+            </svg>
             <span class="control-label">Right stick — Look</span>
           </div>
         </div>

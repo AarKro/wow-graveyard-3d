@@ -22,7 +22,8 @@ html, body {
   overscroll-behavior: none;
 }
 
-body.is-touch {
+.is-touch,
+.is-touch body {
   touch-action: none;
   -webkit-user-select: none;
   user-select: none;
@@ -242,30 +243,18 @@ body.is-touch {
   display: none;
 }
 
-body.is-touch .overlay__controls--desktop {
+.is-touch .overlay__controls--desktop {
   display: none;
 }
 
-body.is-touch .overlay__controls--touch {
+.is-touch .overlay__controls--touch {
   display: flex;
 }
 
-.stick-hint {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 2px solid rgba(180, 140, 60, 0.55);
-  background: rgba(30, 24, 12, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.stick-hint__dot {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: rgba(232, 213, 163, 0.85);
+.stick-svg {
+  width: 48px;
+  height: 48px;
+  color: #c8b882;
 }
 
 /* --- Virtual joysticks (mobile) --- */
@@ -304,7 +293,7 @@ body.is-touch .overlay__controls--touch {
 }
 
 @media (orientation: portrait) {
-  body.is-touch #rotate-notice {
+  .is-touch #rotate-notice {
     position: fixed;
     inset: 0;
     z-index: 200;
