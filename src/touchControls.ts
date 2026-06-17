@@ -49,8 +49,6 @@ const createJoysticks = (): void => {
 export const initTouchControls = (): void => {
   if (!isTouch) return;
 
-  document.body.classList.add('is-touch');
-
   const cta = document.getElementById('overlay-cta');
   if (cta) cta.textContent = 'Tap anywhere to enter';
 
