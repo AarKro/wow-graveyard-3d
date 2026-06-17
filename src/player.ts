@@ -15,7 +15,7 @@ const TOUCH_LOOK_SPEED = config.player.touchLookSpeed;
 
 // Touch devices (phones/tablets) get on-screen joysticks instead of
 // pointer-lock + mouse look, which they don't meaningfully support.
-export const isTouch = window.matchMedia('(pointer: coarse)').matches;
+export const isTouch = !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 let yaw = 0;
 let pitch = 0;
