@@ -11,6 +11,12 @@ const GRAVITY = config.player.gravity;
 const JUMP_IMPULSE = config.player.jumpImpulse;
 const FRICTION = config.player.friction;
 const MOUSE_SENS = config.player.mouseSensitivity;
+const TOUCH_LOOK_SPEED = config.player.touchLookSpeed;
+
+// Touch devices (phones/tablets) get on-screen joysticks instead of
+// pointer-lock + mouse look, which they don't meaningfully support.
+export const isTouch =
+  window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
 
 let yaw = 0;
 let pitch = 0;
@@ -26,21 +32,40 @@ let moveRight = false;
 let sprinting = false;
 let canJump = false;
 
+// Analog input written by the on-screen joysticks (mobile only).
+// Move: x = strafe (right positive), y = forward (up positive).
+// Look: per-axis deflection (-1..1) applied as a rotation rate each frame.
+const touchMove = { x: 0, y: 0 };
+const touchLook = { x: 0, y: 0 };
+export const setTouchMove = (x: number, y: number): void => { touchMove.x = x; touchMove.y = y; };
+export const setTouchLook = (x: number, y: number): void => { touchLook.x = x; touchLook.y = y; };
+
 export const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 1, 2000);
 
-let isLocked = false;
+// "active" means the player is in control: pointer-locked on desktop, or
+// entered via tap on touch devices.
+let active = false;
 const overlay = document.getElementById('overlay') as HTMLElement;
-document.body.addEventListener('click', () => document.body.requestPointerLock());
-document.addEventListener('pointerlockchange', () => {
-  isLocked = document.pointerLockElement === document.body;
-  overlay.classList.toggle('hidden', isLocked);
-});
-document.addEventListener('mousemove', (e: MouseEvent) => {
-  if (!isLocked) return;
-  yaw += e.movementX * MOUSE_SENS;
-  pitch += e.movementY * MOUSE_SENS;
-  pitch = Math.max(-Math.PI * 0.49, Math.min(Math.PI * 0.49, pitch));
-});
+
+// Called by the touch controls once the user taps to enter.
+export const enterTouch = (): void => {
+  active = true;
+  overlay.classList.add('hidden');
+};
+
+if (!isTouch) {
+  document.body.addEventListener('click', () => document.body.requestPointerLock());
+  document.addEventListener('pointerlockchange', () => {
+    active = document.pointerLockElement === document.body;
+    overlay.classList.toggle('hidden', active);
+  });
+  document.addEventListener('mousemove', (e: MouseEvent) => {
+    if (!active) return;
+    yaw += e.movementX * MOUSE_SENS;
+    pitch += e.movementY * MOUSE_SENS;
+    pitch = Math.max(-Math.PI * 0.49, Math.min(Math.PI * 0.49, pitch));
+  });
+}
 
 document.addEventListener('keydown', (e: KeyboardEvent) => {
   switch (e.code) {
@@ -69,17 +94,37 @@ export const updatePlayer = (delta: number): void => {
   velocity.z -= velocity.z * FRICTION * delta;
   velocity.y -= GRAVITY * delta;
 
-  if (isLocked) {
+  if (active) {
+    // Right joystick looks around at a rate proportional to its deflection.
+    if (isTouch) {
+      yaw += touchLook.x * TOUCH_LOOK_SPEED * delta;
+      pitch -= touchLook.y * TOUCH_LOOK_SPEED * delta;
+      pitch = Math.max(-Math.PI * 0.49, Math.min(Math.PI * 0.49, pitch));
+    }
+
     const sinYaw = Math.sin(yaw);
     const cosYaw = Math.cos(yaw);
-    let dirX = 0, dirZ = 0;
-    if (moveForward)  { dirX += sinYaw; dirZ -= cosYaw; }
-    if (moveBackward) { dirX -= sinYaw; dirZ += cosYaw; }
-    if (moveRight)    { dirX += cosYaw; dirZ += sinYaw; }
-    if (moveLeft)     { dirX -= cosYaw; dirZ -= sinYaw; }
+
+    // Resolve forward/strafe intent (digital on desktop, analog on touch).
+    let forward = 0, strafe = 0, speedScale = 1;
+    if (isTouch) {
+      forward = touchMove.y;
+      strafe = touchMove.x;
+    } else {
+      if (moveForward)  forward += 1;
+      if (moveBackward) forward -= 1;
+      if (moveRight)    strafe += 1;
+      if (moveLeft)     strafe -= 1;
+      if (sprinting)    speedScale = SPRINT_MULTIPLIER;
+    }
+
+    const dirX = sinYaw * forward + cosYaw * strafe;
+    const dirZ = -cosYaw * forward + sinYaw * strafe;
     const dirLength = Math.sqrt(dirX * dirX + dirZ * dirZ);
     if (dirLength > 0) {
-      const speed = MOVE_SPEED * (sprinting ? SPRINT_MULTIPLIER : 1);
+      // On touch, scale speed by joystick magnitude (clamped) for analog walking.
+      const magnitude = isTouch ? Math.min(1, Math.sqrt(forward * forward + strafe * strafe)) : 1;
+      const speed = MOVE_SPEED * speedScale * magnitude;
       velocity.x += (dirX / dirLength) * speed * delta;
       velocity.z += (dirZ / dirLength) * speed * delta;
     }
