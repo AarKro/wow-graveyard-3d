@@ -10,7 +10,7 @@
     <!-- Detect touch capability before first paint so the intro overlay shows
          the correct control scheme (touch vs. keyboard+mouse) with no flash. -->
     <script>
-      if (window.matchMedia('(pointer: coarse)').matches) {
+      if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
         document.documentElement.classList.add('is-touch');
       }
     </script>
