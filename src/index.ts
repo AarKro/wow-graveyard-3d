@@ -31,24 +31,30 @@ buildFlowerPatches();
 // add godrays (sun rays) post-processing effect after all scene objects are created, so they are included in the depth buffer used for light scattering
 const composer = buildComposer(renderer, camera);
 
-// Keep renderer, camera and label renderer in sync with the window.
-// setSize reallocates GPU framebuffers, so debounce it — firing on every
-// pixel while the user drags a window edge causes severe framebuffer thrash.
-let resizeDebounce: ReturnType<typeof setTimeout>;
+// Keep renderer and camera in sync with the window on every resize event.
+// renderer.setSize / labelRenderer.setSize only resize the canvas element —
+// cheap. composer.setSize reallocates all post-processing GPU render targets
+// (depth buffer, godray buffers, etc.) — expensive, so debounce that part only.
+// Debouncing everything caused the canvas to hold stale dimensions for 150ms
+// and then snap, which itself looked like a jump.
+let composerResizeDebounce: ReturnType<typeof setTimeout>;
 const onResize = (): void => {
-  clearTimeout(resizeDebounce);
-  resizeDebounce = setTimeout(() => {
-    sizes.width = window.innerWidth;
-    sizes.height = window.innerHeight;
-    camera.aspect = sizes.width / sizes.height;
-    camera.updateProjectionMatrix();
-    renderer.setSize(sizes.width, sizes.height);
+  sizes.width = window.innerWidth;
+  sizes.height = window.innerHeight;
+  camera.aspect = sizes.width / sizes.height;
+  camera.updateProjectionMatrix();
+  renderer.setSize(sizes.width, sizes.height);
+  labelRenderer.setSize(sizes.width, sizes.height);
+
+  clearTimeout(composerResizeDebounce);
+  composerResizeDebounce = setTimeout(() => {
     composer.setSize(sizes.width, sizes.height);
-    labelRenderer.setSize(sizes.width, sizes.height);
   }, 150);
 };
 window.addEventListener('resize', onResize);
-window.addEventListener('orientationchange', onResize);
+// orientationchange fires before the browser has applied the new dimensions,
+// so defer one tick to let innerWidth/innerHeight settle first.
+window.addEventListener('orientationchange', () => setTimeout(onResize, 100));
 
 let prevTime = performance.now();
 

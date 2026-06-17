@@ -89,8 +89,13 @@ document.addEventListener('keyup', (e: KeyboardEvent) => {
 });
 
 export const updatePlayer = (delta: number): void => {
-  velocity.x -= velocity.x * FRICTION * delta;
-  velocity.z -= velocity.z * FRICTION * delta;
+  // Use a clamped multiplier so friction never overshoots zero and reverses
+  // velocity. The naive `v -= v * FRICTION * delta` formula goes negative when
+  // delta > 1/FRICTION (50ms at FRICTION=20), which causes the player to shoot
+  // backward on any dropped frame — e.g. during a resize or tab switch.
+  const frictionDecay = Math.max(0, 1 - FRICTION * delta);
+  velocity.x *= frictionDecay;
+  velocity.z *= frictionDecay;
   velocity.y -= GRAVITY * delta;
 
   if (active) {
