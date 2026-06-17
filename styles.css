@@ -17,8 +17,16 @@
   box-sizing: border-box;
 }
 
-body {
+html, body {
   overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body.is-touch {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .label-renderer {
@@ -227,4 +235,115 @@ body {
   width: 14px;
   height: 14px;
   flex-shrink: 0;
+}
+
+/* --- Desktop / touch control hint switching --- */
+.overlay__controls--touch {
+  display: none;
+}
+
+body.is-touch .overlay__controls--desktop {
+  display: none;
+}
+
+body.is-touch .overlay__controls--touch {
+  display: flex;
+}
+
+.stick-hint {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid rgba(180, 140, 60, 0.55);
+  background: rgba(30, 24, 12, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stick-hint__dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(232, 213, 163, 0.85);
+}
+
+/* --- Virtual joysticks (mobile) --- */
+#touch-controls {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  display: none;
+}
+
+#touch-controls.active {
+  display: block;
+}
+
+.joystick-zone {
+  position: absolute;
+  bottom: 0;
+  height: 55%;
+  width: 45%;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+#joystick-left {
+  left: 0;
+}
+
+#joystick-right {
+  right: 0;
+}
+
+/* --- Rotate-to-landscape notice (mobile portrait) --- */
+#rotate-notice {
+  display: none;
+}
+
+@media (orientation: portrait) {
+  body.is-touch #rotate-notice {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(8, 6, 3, 0.96);
+    font-family: 'ChakraPetch', Georgia, serif;
+    color: #e8d5a3;
+    text-align: center;
+    padding: 32px;
+  }
+}
+
+.rotate-notice__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.rotate-notice__icon {
+  width: 72px;
+  height: 72px;
+  color: #f0d070;
+  animation: rotate-hint 2s ease-in-out infinite;
+}
+
+.rotate-notice__text {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #f0d070;
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+@keyframes rotate-hint {
+  0%, 40%, 100% { transform: rotate(0deg); }
+  70%, 90% { transform: rotate(-90deg); }
 }

@@ -73,7 +73,8 @@
     "gravity": 150,
     "jumpImpulse": 50,
     "friction": 20,
-    "mouseSensitivity": 0.002
+    "mouseSensitivity": 0.002,
+    "touchLookSpeed": 2.6
   },
   "clouds": {
     "seed": 141,
